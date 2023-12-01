@@ -52,14 +52,17 @@ fun getLastDigit(inputString: String): Int {
 fun getCalibrationNumber(inputString: String) = 10 * getFirstDigit(inputString) + getLastDigit(inputString)
 
 fun getSum(reader: BufferedReader): Int {
-    return reader.lines().parallel()
+    return reader.lines()
         .mapToInt { getCalibrationNumber(it) }
         .sum()
 }
 
 fun main() {
-    var reader = object {}.javaClass.getResourceAsStream("day1_input.txt")!!.bufferedReader()
-    print(getSum(reader))
+    val startTime = System.currentTimeMillis();
+    val reader = object {}.javaClass.getResourceAsStream("day1_input.txt")!!.bufferedReader()
+    val sum = getSum(reader)
+    val endTime = System.currentTimeMillis();
+    print("Answer: $sum - Calculation time - ${endTime - startTime}ms")
 }
 
 
