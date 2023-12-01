@@ -2,6 +2,8 @@ package dayOne
 
 import java.io.BufferedReader
 
+
+
 private val digitMap = mapOf(
     "1" to 1,
     "2" to 2,
@@ -44,7 +46,7 @@ fun getLastDigit(inputString: String): Int {
         if (startingIndex == -1) continue
         if (startingIndex + key.length == stringCopy.length) return digitMap[key]!!
         currentMatch = digitMap[key]!!
-        stringCopy = stringCopy.substring(startingIndex)
+        stringCopy = stringCopy.substring(startingIndex + 1)
     }
     return currentMatch!!
 }
