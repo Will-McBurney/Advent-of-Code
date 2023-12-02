@@ -26,10 +26,7 @@ fun getResult(reader: BufferedReader): Int {
             val greenMatch = """([0-9]+) green""".toRegex().find(round)
             if (greenMatch != null) game.updateGreen(greenMatch.groupValues[1].toInt())
         }
-        if (game.maxRed <= 12 && game.maxGreen <= 13 && game.maxBlue <= 14) {
-            println(game)
-            sum+= gameID
-        }
+        sum+= game.maxRed * game.maxBlue * game.maxGreen
     }
     return sum;
 }
