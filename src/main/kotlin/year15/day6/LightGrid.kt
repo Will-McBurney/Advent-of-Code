@@ -35,7 +35,7 @@ class LightGrid(
     }
 
     fun acceptCommand(command: String) {
-        var operation: ((x: Int, y: Int) -> Unit)? = null
+        val operation: ((x: Int, y: Int) -> Unit)?
         val commandSplit = command.split(" ")
         var bottomLeftIndex = -1
         if (commandSplit[0] == "toggle") {
