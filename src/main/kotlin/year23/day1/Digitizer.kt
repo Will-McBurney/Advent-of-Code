@@ -1,4 +1,4 @@
-package dayOne
+package year23.day1
 
 import java.io.BufferedReader
 
