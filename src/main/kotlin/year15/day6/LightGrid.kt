@@ -52,11 +52,16 @@ class LightGrid(
             throw IllegalArgumentException("Bad command: $command")
         }
         val topRightIndex = bottomLeftIndex + 2
-        val bottomLeftSplit = commandSplit[bottomLeftIndex].split(",")
-        val topRightSplit = commandSplit[topRightIndex].split(",")
-        val bottomLeft = Coordinate(bottomLeftSplit[0].toInt(), bottomLeftSplit[1].toInt())
-        val topRight = Coordinate(topRightSplit[0].toInt(), topRightSplit[1].toInt())
+        val bottomLeft = getCoordinate(commandSplit, bottomLeftIndex)
+        val topRight = getCoordinate(commandSplit, topRightIndex)
+
         runOperation(bottomLeft, topRight, operation)
+    }
+
+    private fun getCoordinate(commandSplit: List<String>, coordinateIndex: Int): Coordinate {
+        val bottomLeftSplit = commandSplit[coordinateIndex].split(",")
+        val bottomLeft = Coordinate(bottomLeftSplit[0].toInt(), bottomLeftSplit[1].toInt())
+        return bottomLeft
     }
 
     fun getTotalBrightness(): Int {
