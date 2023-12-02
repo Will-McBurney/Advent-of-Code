@@ -37,7 +37,7 @@ class LightGrid(
     fun acceptCommand(command: String) {
         val operation: ((x: Int, y: Int) -> Unit)?
         val commandSplit = command.split(" ")
-        var bottomLeftIndex = -1
+        val bottomLeftIndex: Int
         if (commandSplit[0] == "toggle") {
             operation = ::toggle
             bottomLeftIndex = 1
