@@ -14,5 +14,5 @@ fun getNumberOfLightsOn(text: String): Any {
     text.split("\n").stream()
         .filter{ it.isNotEmpty() }
         .forEach{ grid.acceptCommand(it) }
-    return grid.getLightsOnCount();
+    return grid.getTotalBrightness();
 }

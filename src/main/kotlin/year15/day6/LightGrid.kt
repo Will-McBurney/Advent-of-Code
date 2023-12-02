@@ -7,22 +7,22 @@ class LightGrid(
     private val size: Int = DEFAULT_SIZE
 ) {
 
-    private val grid: Array<Array<Boolean>> = Array(size) { Array(size) { false } }
+    private val grid: Array<Array<Int>> = Array(size) { Array(size) { 0 } }
 
 
     fun turnOn(x: Int, y: Int) {
-        grid[x][y] = true
+        grid[x][y] = grid[x][y] + 1
     }
 
     fun turnOff(x: Int, y: Int) {
-        grid[x][y] = false
+        grid[x][y] = (grid[x][y] - 1).coerceAtLeast(0)
     }
 
     fun toggle(x: Int, y: Int) {
-        grid[x][y] = !grid[x][y]
+        grid[x][y] = grid[x][y] + 2
     }
 
-    fun get(x: Int, y: Int): Boolean {
+    fun get(x: Int, y: Int): Int {
         return grid[x][y]
     }
 
@@ -59,9 +59,9 @@ class LightGrid(
         runOperation(bottomLeft, topRight, operation)
     }
 
-    fun getLightsOnCount(): Int {
+    fun getTotalBrightness(): Int {
         return grid.flatten()
-            .count{ it }
+            .sum()
     }
 }
 
