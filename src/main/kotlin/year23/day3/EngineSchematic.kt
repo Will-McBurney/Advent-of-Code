@@ -6,9 +6,10 @@ import java.util.stream.Collectors
 import kotlin.streams.asStream
 
 const val inputFilename = "input.txt"
-var lines = emptyList<String>()
-var lineLength = -1
-var lineCount = -1
+lateinit var lines: List<String>
+lateinit var grid: CharGrid
+var lineLength: Int = -1
+var lineCount: Int = -1
 
 fun main() {
     val startTime = System.currentTimeMillis()
@@ -16,8 +17,9 @@ fun main() {
 
 
     lines = reader.readLines()
-    lineLength = lines[0].length
-    lineCount = lines.size
+    grid = CharGrid(lines)
+    lineLength = grid.width
+    lineCount = grid.height
 
     val getPart1Result = getPart1Result(reader)
     val getPart2Result = getPart2Result()
@@ -52,39 +54,9 @@ fun getSpecNumbersFromLine(line: String, lineNumber: Int): List<SpecNumber> {
 }
 
 fun hasAdjacentSymbol(specNumber: SpecNumber): Boolean {
-    val targetLineNumber = specNumber.lineNumber;
-    val startingIndex =  (specNumber.startingIndex - 1).coerceAtLeast(0)
-    val endingIndex = (specNumber.endingIndex + 1).coerceAtMost(lineLength - 1)
-
-    //check left and right
-    if (specNumber.startingIndex != 0 &&
-        lines[targetLineNumber][specNumber.startingIndex - 1] != '.') {
-        return true
-    }
-
-    if (specNumber.endingIndex != lineLength - 1 &&
-        lines[targetLineNumber][specNumber.endingIndex + 1] != '.') {
-        return true
-    }
-
-    if(specNumber.lineNumber != 0) {
-        val above = lines[specNumber.lineNumber - 1]
-        for (i in startingIndex .. endingIndex) {
-            if (above[i] != '.') {
-                return true;
-            }
-        }
-    }
-
-    if(specNumber.lineNumber != lineCount  - 1) {
-        val below = lines[specNumber.lineNumber + 1]
-        for (i in startingIndex .. endingIndex) {
-            if (below[i] != '.') {
-                return true;
-            }
-        }
-    }
-    return false;
+    return specNumber.getNeighbors(grid)
+        .map { grid.get(it.first, it.second) }
+        .any { it != '.' }
 }
 
 fun getPart2Result(): Int {
@@ -93,53 +65,28 @@ fun getPart2Result(): Int {
         .flatten()
         .groupBy(SpecNumber::lineNumber)
 
-    var sum = 0;
-    for(lineNumber in lines.indices) {
-        val lineArray = lines[lineNumber].toCharArray()
-        for (charIndex in lineArray.indices) {
-            if (lineArray[charIndex] == '*') {
-                sum += getGearRatio(lineNumber, charIndex, lineSpecNumberMap)
-            }
+
+    return lines.asSequence()
+        .mapIndexed{ lineNumber, line ->
+            line.toCharArray().indices
+                .filter { charIndex -> line[charIndex] == '*' }
+                .sumOf { charIndex -> getGearRatio(lineNumber, charIndex, lineSpecNumberMap) }
         }
-    }
-    return sum;
+        .sum()
 }
 
 fun getGearRatio(row: Int, column: Int, lineSpecNumberMap: Map<Int, List<SpecNumber>>): Int {
-    val adjacentSpecNumbers = hashSetOf<SpecNumber>()
-    //check left
-    if (column != 0 && isDigit(lines[row][column - 1])) {
-        adjacentSpecNumbers.add(getSpecNumber(row, column - 1, lineSpecNumberMap))
-    }
-    if (column != lineLength - 1 && isDigit(lines[row][column + 1])) {
-        adjacentSpecNumbers.add(getSpecNumber(row, column + 1, lineSpecNumberMap))
-    }
+    val adjacentSet = grid.getNeighborsCoordinates(row, column)
+        .filter{isDigit(grid.get(it.first, it.second)) }
+        .map{ getSpecNumber(it.first, it.second, lineSpecNumberMap) }
+        .toSet()
 
-    val startingIndex =  (column - 1).coerceAtLeast(0)
-    val endingIndex = (column + 1).coerceAtMost(lineLength - 1)
-
-    if(row != 0) {
-        val above = lines[row - 1]
-        for (i in startingIndex .. endingIndex) {
-            if (isDigit(above[i])) {
-                adjacentSpecNumbers.add(getSpecNumber(row - 1, i, lineSpecNumberMap))
-            }
-        }
-    }
-
-    if(row != lineCount  - 1) {
-        val below = lines[row + 1]
-        for (i in startingIndex .. endingIndex) {
-            if (isDigit(below[i])) {
-                adjacentSpecNumbers.add(getSpecNumber(row + 1, i, lineSpecNumberMap))
-            }
-        }
-    }
-
-    if (adjacentSpecNumbers.size != 2) {
+    if (adjacentSet.size != 2) {
         return 0
     }
-    return adjacentSpecNumbers.map(SpecNumber::value).reduce(Int::times)
+    return adjacentSet
+        .map(SpecNumber::value)
+        .reduce(Int::times)
 }
 
 fun getSpecNumber(row: Int, column: Int, lineSpecNumberMap: Map<Int, List<SpecNumber>>): SpecNumber {
