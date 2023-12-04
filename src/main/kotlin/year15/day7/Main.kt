@@ -10,7 +10,11 @@ fun main() {
     val result1 = getPart1Result(gateList)
     val result2 = getPart2Result(gateList, result1)
     val endTime = System.currentTimeMillis();
-    print("Answer: $result2 - Calculation time - ${endTime - startTime}ms")
+    print("""
+        Part1: $result1
+        Part2: $result2 
+        Calculation time - ${endTime - startTime}ms"""
+        .trimIndent())
 }
 
 fun getPart1Result(gateList: List<Gate>): UShort {
@@ -28,15 +32,12 @@ fun getPart1Result(gateList: List<Gate>): UShort {
 fun getPart2Result(gateList: List<Gate>, aResult: UShort): UShort {
     val wireMap = WireMap()
     wireMap.addWireValue("b", aResult)
-    println(wireMap)
     while (wireMap.getWireValue("a") == null ) {
         gateList.filter { it.isResolvable(wireMap) }
             .forEach {
                 wireMap.addWireValue(it.getResultWireName(), it.getResultValue(wireMap))
             }
     }
-
-    println(wireMap)
     return wireMap.getWireValue("a")!!
 }
 
