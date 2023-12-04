@@ -1,6 +1,6 @@
 package year23.day3
 
-import java.util.NoSuchElementException
+
 import kotlin.streams.asStream
 
 lateinit var lines: List<String>

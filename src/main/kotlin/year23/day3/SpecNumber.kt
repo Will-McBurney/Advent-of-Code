@@ -6,10 +6,6 @@ data class SpecNumber(
     val endingIndex: Int,
     val value: Int,
 ) {
-    fun containsIndex(row: Int, column: Int): Boolean {
-        return lineNumber == row && startingIndex <= column && column <= endingIndex
-    }
-
     fun getCoordinates(): Set<Pair<Int, Int>> {
         return (startingIndex .. endingIndex).map {
             Pair(lineNumber, it)
