@@ -10,7 +10,7 @@ data class SpecNumber(
         return lineNumber == row && startingIndex <= column && column <= endingIndex
     }
 
-    private fun getCoordinates(): Set<Pair<Int, Int>> {
+    fun getCoordinates(): Set<Pair<Int, Int>> {
         return (startingIndex .. endingIndex).map {
             Pair(lineNumber, it)
         }.toSet()

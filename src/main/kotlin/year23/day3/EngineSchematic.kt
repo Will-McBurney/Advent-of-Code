@@ -57,25 +57,30 @@ fun hasAdjacentSymbol(specNumber: SpecNumber): Boolean {
 }
 
 fun getPart2Result(): Int {
-    val lineSpecNumberMap = lines.asSequence()
+    val coordinateSpecNumberMap = lines.asSequence()
         .mapIndexed{index, line -> getSpecNumbersFromLine(line, index)}
         .flatten()
-        .groupBy(SpecNumber::lineNumber)
-
-
-    return lines.asSequence()
-        .mapIndexed{ lineNumber, line ->
-            line.toCharArray().indices
-                .filter { charIndex -> line[charIndex] == '*' }
-                .sumOf { charIndex -> getGearRatio(lineNumber, charIndex, lineSpecNumberMap) }
+        .map { specNumber ->
+            specNumber.getCoordinates().associateWith { specNumber }
         }
-        .sum()
+        .flatMap { it.asSequence() }
+        .associate { it.key to it.value }
+
+
+    return (0 ..< grid.height).map {
+        row -> (0..< grid.width).map {
+            column -> Pair(row, column)
+        }
+    }
+        .flatten()
+        .filter { grid.get(it.first, it.second) == '*'}
+        .sumOf { getGearRatio(it.first, it.second, coordinateSpecNumberMap) }
 }
 
-fun getGearRatio(row: Int, column: Int, lineSpecNumberMap: Map<Int, List<SpecNumber>>): Int {
+fun getGearRatio(row: Int, column: Int, coordinateSpecNumberMap: Map<Pair<Int, Int>, SpecNumber>): Int {
     val adjacentSet = grid.getNeighborsCoordinates(row, column)
         .filter{isDigit(grid.get(it.first, it.second)) }
-        .map{ getSpecNumber(it.first, it.second, lineSpecNumberMap) }
+        .map{ getSpecNumber(it.first, it.second, coordinateSpecNumberMap) }
         .toSet()
 
     if (adjacentSet.size != 2) {
@@ -86,15 +91,9 @@ fun getGearRatio(row: Int, column: Int, lineSpecNumberMap: Map<Int, List<SpecNum
         .reduce(Int::times)
 }
 
-fun getSpecNumber(row: Int, column: Int, lineSpecNumberMap: Map<Int, List<SpecNumber>>): SpecNumber {
-    val lineSpecNumbers = lineSpecNumberMap[row]!!
-    for (specNumber in lineSpecNumbers) {
-        if (specNumber.containsIndex(row, column)) {
-            return specNumber
-        }
-    }
-    throw NoSuchElementException("row - $row, column - $column - ${lineSpecNumberMap[row]}")
-}
+fun getSpecNumber(row: Int, column: Int, coordinateSpecNumberMap: Map<Pair<Int, Int>, SpecNumber>): SpecNumber =
+    coordinateSpecNumberMap[Pair(row, column)]!!
+
 
 fun isDigit(char: Char): Boolean {
     return char in '0'..'9'

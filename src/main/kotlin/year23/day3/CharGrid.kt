@@ -27,9 +27,7 @@ class CharGrid(
         contents[row][column] = char
     }
 
-    private fun isInBounds(row: Int, column: Int): Boolean {
-        return (row in 0..< height) && (column in 0 ..< width)
-    }
+    private fun isInBounds(row: Int, column: Int) = (row in 0..< height) && (column in 0 ..< width)
 
     fun getNeighborsCoordinates(row: Int, column: Int): List<Pair<Int, Int>> {
         if (!isInBounds(row, column)) {
