@@ -1,15 +1,14 @@
 package year15.day7
 
 import java.io.BufferedReader
-import kotlin.streams.toList
 
 fun main() {
-    val startTime = System.currentTimeMillis();
+    val startTime = System.currentTimeMillis()
     val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
     val gateList = buildGateList(reader)
     val result1 = getPart1Result(gateList)
     val result2 = getPart2Result(gateList, result1)
-    val endTime = System.currentTimeMillis();
+    val endTime = System.currentTimeMillis()
     print("""
         Part1: $result1
         Part2: $result2 
