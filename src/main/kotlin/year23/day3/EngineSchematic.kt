@@ -1,11 +1,8 @@
 package year23.day3
 
-import java.io.BufferedReader
 import java.util.NoSuchElementException
-import java.util.stream.Collectors
 import kotlin.streams.asStream
 
-const val inputFilename = "input.txt"
 lateinit var lines: List<String>
 lateinit var grid: CharGrid
 var lineLength: Int = -1
@@ -21,7 +18,7 @@ fun main() {
     lineLength = grid.width
     lineCount = grid.height
 
-    val getPart1Result = getPart1Result(reader)
+    val getPart1Result = getPart1Result()
     val getPart2Result = getPart2Result()
     val endTime = System.currentTimeMillis()
     println(
@@ -32,7 +29,7 @@ fun main() {
     )
 }
 
-fun getPart1Result(reader: BufferedReader): Int {
+fun getPart1Result(): Int {
     return lines.asSequence()
         .mapIndexed{ index, line -> getSpecNumbersFromLine(line, index) }
         .asStream().parallel()
@@ -44,13 +41,13 @@ fun getPart1Result(reader: BufferedReader): Int {
 
 const val numberMatchPattern = "[0-9]+"
 fun getSpecNumbersFromLine(line: String, lineNumber: Int): List<SpecNumber> {
-    var match = Regex(numberMatchPattern).find(line);
+    var match = Regex(numberMatchPattern).find(line)
     val specNumbers = arrayListOf<SpecNumber>()
     while (match != null) {
         specNumbers.add(SpecNumber(lineNumber, match.range.first, match.range.last, match.value.toInt()))
         match = match.next()
     }
-    return specNumbers.filter { hasAdjacentSymbol(it) };
+    return specNumbers.filter { hasAdjacentSymbol(it) }
 }
 
 fun hasAdjacentSymbol(specNumber: SpecNumber): Boolean {

@@ -27,7 +27,7 @@ class CharGrid(
         contents[row][column] = char
     }
 
-    fun isInBounds(row: Int, column: Int): Boolean {
+    private fun isInBounds(row: Int, column: Int): Boolean {
         return (row in 0..< height) && (column in 0 ..< width)
     }
 
