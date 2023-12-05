@@ -41,3 +41,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 /.idea/uiDesigner.xml
+/.idea/gradle.xml
+/.idea/jpa-buddy.xml
