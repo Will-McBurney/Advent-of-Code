@@ -51,7 +51,7 @@ fun getPermutations(locations: Set<String>): MutableList<MutableList<String>> {
         innerPaths.forEach { it.add(0, location) }
         innerPaths.forEach { paths.add(it) }
     }
-    return paths;
+    return paths
 }
 
 fun getLocations(distanceMap: Map<Pair<String, String>, Int>): Set<String> {
