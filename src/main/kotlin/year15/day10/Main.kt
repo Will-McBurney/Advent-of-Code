@@ -39,7 +39,7 @@ fun getPart2Result(part2Memo:String): Int {
 fun seeSayNumberString(input: String): String {
     var count = 0
     var currentDigit = ' '
-    var outputBuilder = StringBuilder(2 * input.length)
+    val outputBuilder = StringBuilder(2 * input.length)
     val charArray = input.toCharArray()
     for (index in charArray.indices) {
         if (currentDigit == ' ') {
