@@ -32,9 +32,8 @@ fun scoreCard(card: Pair<Set<Int>, Set<Int>>):Int {
 }
 
 fun getPart1Result(): Int {
-    return inputLines.map{
-        it.substringAfter(": ")
-    }
+    return inputLines
+        .map { it.substringAfter(": ") }
         .map { it.split("|") }
         .map { Pair(stringToInts(it[0]), stringToInts(it[1]))}
         .sumOf{ scoreCard(it) }
