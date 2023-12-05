@@ -6,8 +6,8 @@ fun main() {
     val startTime = System.currentTimeMillis()
     val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
     inputLines = reader.readLines()
-    val getPart1Result = getPart1Result()
-    val getPart2Result = getPart2Result()
+    val getPart1Result = getPart1Result(inputLines)
+    val getPart2Result = getPart2Result(inputLines)
     val endTime = System.currentTimeMillis()
     println(
         """
@@ -31,7 +31,7 @@ fun scoreCard(card: Pair<Set<Int>, Set<Int>>):Int {
     return score
 }
 
-fun getPart1Result(): Int {
+fun getPart1Result(inputLines: List<String>): Int {
     return inputLines
         .map { it.substringAfter(": ") }
         .map { it.split("|") }
@@ -52,7 +52,7 @@ private fun getMatchesCount(card: Pair<Set<Int>, Set<Int>>): Int {
     return winningNumbers.count(guessedNumbers::contains)
 }
 
-fun getPart2Result(): Int {
+fun getPart2Result(inputLines: List<String>): Int {
     val startingCards = inputLines.map{
         it.substringAfter(": ")
     }
