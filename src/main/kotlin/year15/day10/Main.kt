@@ -2,6 +2,7 @@ package year15.day10
 
 
 const val puzzle_input = "1113122113"
+var part2Memo: String = ""
 
 fun main() {
     val startTime = System.currentTimeMillis()
@@ -18,7 +19,7 @@ fun main() {
 }
 
 
-var part2Memo: String = ""
+
 fun getPart1Result(puzzleInput: String): Int {
     var string = puzzleInput
     for (i in 1..40) {
