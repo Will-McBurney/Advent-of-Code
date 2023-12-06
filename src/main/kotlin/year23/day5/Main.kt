@@ -60,16 +60,8 @@ fun getPart1Result(seeds: List<Long>, mapperChain: MapperChain): Long =
 
 fun getPart2Result(seeds: List<Long>, mapperChain: MapperChain): Long {
     val seedRanges = getSeedRanges(seeds)
-    var i = 0L
-    while (true) {
-        val minOpt = (i ..< i+100000).toList().parallelStream()
-            .map { mapperChain.getSeedFromLocation(it) }
-            .filter { seed -> seedRanges.any { it.contains(seed)} }
-            .mapToLong{ mapperChain.getData(it, MapperChain.Datum.LOCATION) }
-            .min()
-        if (minOpt.isPresent) return minOpt.asLong
-        i+=100000
-    }
+    val locationRanges = mapperChain.getLocationRanges(seedRanges)
+    return locationRanges.minOf { it.first }
 }
 
 
@@ -78,6 +70,7 @@ fun getSeedRanges(seeds: List<Long>): List<LongRange> {
     for (index in seeds.indices step 2) {
         rangeList.add(seeds[index]..<seeds[index] + seeds[index + 1])
     }
+    rangeList.sortBy { it.first }
     return rangeList
 }
 

@@ -30,4 +30,19 @@ class MapperChain(private val mappers: List<Mapper>) {
         return currentValue
     }
 
+    fun printBreakPoints() {
+        mappers.map { it.getBreakPoints() }
+            .forEachIndexed {index, it -> println("$index : $it")}
+    }
+
+    fun getLocationRanges(ranges: List<LongRange>): List<LongRange> {
+        var currentRanges = ranges
+        for (mapper in mappers) {
+            currentRanges = mapper.mapRanges(currentRanges).sortedBy { it.first }
+            println("$===============mappers.indexOf(mapper)==================$")
+            //println(currentRanges)
+        }
+        return currentRanges
+    }
+
 }
