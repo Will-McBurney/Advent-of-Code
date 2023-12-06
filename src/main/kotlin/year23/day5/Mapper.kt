@@ -1,7 +1,5 @@
 package year23.day5
 
-import kotlin.streams.toList
-
 class Mapper(private val inputTriples: List<Triple<Long, Long, Long>>) {
     fun getSourceRange(input: Triple<Long, Long, Long>): LongRange  {
         val sourceStart = input.second
@@ -18,7 +16,7 @@ class Mapper(private val inputTriples: List<Triple<Long, Long, Long>>) {
         return number in getSourceRange(triple)
     }
 
-    fun isInDestinationRange(number: Long, triple: Triple<Long, Long, Long>): Boolean {
+    private fun isInDestinationRange(number: Long, triple: Triple<Long, Long, Long>): Boolean {
         return number in getDestinationRange(triple)
     }
 
@@ -31,7 +29,7 @@ class Mapper(private val inputTriples: List<Triple<Long, Long, Long>>) {
         return getDestinationRange(triple).first + delta
     }
 
-    fun getBreakPoints(): List<Long> {
+    private fun getBreakPoints(): List<Long> {
         return inputTriples.map {getSourceRange(it)}
             .map{ listOf(it.first, it.last + 1) }
             .flatten()
@@ -49,7 +47,7 @@ class Mapper(private val inputTriples: List<Triple<Long, Long, Long>>) {
         return number
     }
 
-    fun getReverseMappingInRange(number: Long, triple: Triple<Long, Long, Long>): Long {
+    private fun getReverseMappingInRange(number: Long, triple: Triple<Long, Long, Long>): Long {
         if (!isInDestinationRange(number, triple)) {
             throw IllegalArgumentException(
                 "$number not in range for $triple - destination range is ${getDestinationRange(triple)}")

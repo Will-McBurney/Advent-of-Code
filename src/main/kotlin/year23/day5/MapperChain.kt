@@ -23,18 +23,6 @@ class MapperChain(private val mappers: List<Mapper>) {
         return "MapperChain(mappers=$mappers)"
     }
 
-    fun getSeedFromLocation(value: Long): Long {
-        var currentValue = value
-        mappers.reversed()
-            .forEach { currentValue = it.getReverseMapping(currentValue) }
-        return currentValue
-    }
-
-    fun printBreakPoints() {
-        mappers.map { it.getBreakPoints() }
-            .forEachIndexed {index, it -> println("$index : $it")}
-    }
-
     fun getLocationRanges(ranges: List<LongRange>): List<LongRange> {
         var currentRanges = ranges
         for (mapper in mappers) {
