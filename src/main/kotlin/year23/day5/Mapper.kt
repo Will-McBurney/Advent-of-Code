@@ -70,9 +70,7 @@ class Mapper(private val inputTriples: List<Triple<Long, Long, Long>>) {
     }
 
     fun mapRanges(ranges: List<LongRange>): List<LongRange> {
-        println(ranges)
         val breakPoints = getBreakPoints()
-        println(breakPoints)
         val sourceRanges = mutableListOf<LongRange>()
         for (range in ranges) {
             var currentRange = range

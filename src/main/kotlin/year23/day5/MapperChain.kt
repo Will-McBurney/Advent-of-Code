@@ -27,8 +27,6 @@ class MapperChain(private val mappers: List<Mapper>) {
         var currentRanges = ranges
         for (mapper in mappers) {
             currentRanges = mapper.mapRanges(currentRanges).sortedBy { it.first }
-            println("$===============mappers.indexOf(mapper)==================$")
-            //println(currentRanges)
         }
         return currentRanges
     }
