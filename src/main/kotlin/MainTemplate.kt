@@ -1,5 +1,3 @@
-
-
 fun main() {
     val startTime = System.currentTimeMillis()
     val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
