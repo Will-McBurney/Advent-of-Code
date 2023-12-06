@@ -17,7 +17,7 @@ fun main() {
 }
 
 fun getNextPassword(startingPassword: String): String {
-    var charArray = startingPassword.toCharArray()
+    val charArray = startingPassword.toCharArray()
     bruteForce(charArray)
     return charArray.concatToString()
 }
