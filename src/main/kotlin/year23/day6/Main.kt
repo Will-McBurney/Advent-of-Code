@@ -1,7 +1,6 @@
 package year23.day6
 
-
-
+import kotlin.math.sqrt
 
 
 fun main() {
@@ -29,13 +28,18 @@ fun getPart1Result(times: List<Long>, distances: List<Long>): Long {
 }
 
 fun getPart2Result(totalTime: Long, recordDistance: Long): Long {
-    return getWinningPossibilities(totalTime, recordDistance)
+    val zeroPoint = getZeroPoint(totalTime, recordDistance)
+    return totalTime - 2 * zeroPoint + (totalTime + 1) % 2
 }
 
 fun getWinningPossibilities(time: Long, distance: Long): Long {
     return (0..time)
         .map{ distanceTraveled(time - it, time)}
         .count { it > distance }.toLong()
+}
+
+fun getZeroPoint(time: Long, distance: Long): Long {
+    return ((time - sqrt((time * time - 4 * distance).toDouble()))/2).toLong() + 1
 }
 
 fun distanceTraveled(waitTime: Long, totalTime: Long): Long {
