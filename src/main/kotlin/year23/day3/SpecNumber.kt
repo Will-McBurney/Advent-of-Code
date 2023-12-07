@@ -7,9 +7,8 @@ data class SpecNumber(
     val value: Int,
 ) {
     fun getCoordinates(): Set<Pair<Int, Int>> {
-        return (startingIndex .. endingIndex).map {
-            Pair(lineNumber, it)
-        }.toSet()
+        return (startingIndex .. endingIndex).map {Pair(lineNumber, it)}
+            .toSet()
     }
 
     fun getNeighbors(grid: CharGrid): Set<Pair<Int, Int>> {
