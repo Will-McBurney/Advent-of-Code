@@ -9,10 +9,10 @@ fun main() {
     val hands = getHandsFromFilename("input.txt")
     val readEndTime = System.currentTimeMillis()
 
-    val part1Result = getBidScore(hands, false)
+    val part1Result = getBidScore(hands, GameRules.NORMAL)
     val part1EndTime = System.currentTimeMillis()
 
-    val part2Result = getBidScore(hands, true)
+    val part2Result = getBidScore(hands, GameRules.JACKS_WILD)
     val part2EndTime = System.currentTimeMillis()
 
     println(
@@ -40,15 +40,8 @@ private fun getHandsFromFilename(filename: String): List<Hand> {
         .toList()
 }
 
-fun getHands(lines: List<String>): List<Hand> {
-    return lines.filterNot(String::isEmpty)
-        .map(String::trim)
-        .map { it.split(" ")}
-        .map { Hand(it[0].toCharArray(), it[1].toInt()) }
-}
-
-fun getBidScore(hands: List<Hand>, jacksWild: Boolean): Int {
-    return hands.sortedBy{ it.getHandScore(jacksWild) }
+fun getBidScore(hands: List<Hand>, gameRules: GameRules): Int {
+    return hands.sortedBy{ it.getHandScore(gameRules) }
         .mapIndexed { index, hand ->  ((index + 1) * hand.bid)}
         .sum()
 }
