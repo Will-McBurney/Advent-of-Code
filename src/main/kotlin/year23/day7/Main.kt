@@ -1,5 +1,7 @@
 package year23.day7
 
+var jacksWild = false
+
 fun main() {
     val startTime = System.currentTimeMillis()
     val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
@@ -12,11 +14,13 @@ fun main() {
 //        QQQJA 483
 //    """.trimIndent().split("\n")
     val hands = getHands(lines)
-    //val part1Result = getPart1Result(hands)
+    val part1Result = getPart1Result(hands)
+    jacksWild = true
     val part2Result = getPart2Result(hands)
     val endTime = System.currentTimeMillis()
     println(
         """
+        |Part One: $part1Result
         |Part Two: $part2Result 
         |Calculation time - ${endTime - startTime}ms
         |""".trimMargin()
@@ -54,6 +58,10 @@ fun getCharacterCounts(charArray: CharArray): Map<Char, Int> {
 }
 
 fun getMaxCharacterCount(charArray: CharArray): Int {
+    if (!jacksWild) {
+        return charArray.associateWith { keyChar -> charArray.count{ it == keyChar} }
+            .maxOf { it.value }
+    }
     val charList = charArray.toMutableList()
     val jays = charList.count { it == 'J' }
     while(charList.contains('J')) {charList.remove('J')}
@@ -66,7 +74,7 @@ fun isFullHouse(charArray: CharArray): Boolean {
     if (charArray.size != 5) {
         throw IllegalArgumentException("Incorrect hand size")
     }
-    if (!charArray.contains('J')) {
+    if (!jacksWild || !charArray.contains('J')) {
         val charCounts = getAscendingCardCounts(charArray)
         return (charCounts[0] == 2 && charCounts[1] == 3)
     }
@@ -100,6 +108,22 @@ enum class HandType(val rank: Int) {
 }
 
 val charToPoints = mapOf(
+    '2' to 1,
+    '3' to 2,
+    '4' to 3,
+    '5' to 4,
+    '6' to 5,
+    '7' to 6,
+    '8' to 7,
+    '9' to 8,
+    'T' to 9,
+    'J' to 10,
+    'Q' to 11,
+    'K' to 12,
+    'A' to 13
+)
+
+val charToPointsJacksWild = mapOf(
     'J' to 0,
     '2' to 1,
     '3' to 2,
@@ -118,7 +142,7 @@ val charToPoints = mapOf(
 data class Hand (val charArray: CharArray, val bid: Int) {
 
     fun getHandScore(): Int {
-        val maxCount = getMaxCharacterCount(charArray)
+        getMaxCharacterCount(charArray)
         var totalScore = getHandType().rank
         for (char in charArray) {
             totalScore = (totalScore * 16) + charToPoints[char]!!
