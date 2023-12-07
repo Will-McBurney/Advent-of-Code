@@ -14,9 +14,9 @@ fun main() {
 //        QQQJA 483
 //    """.trimIndent().split("\n")
     val hands = getHands(lines)
-    val part1Result = getPart1Result(hands)
+    val part1Result = getBidScore(hands)
     jacksWild = true
-    val part2Result = getPart2Result(hands)
+    val part2Result = getBidScore(hands)
     val endTime = System.currentTimeMillis()
     println(
         """
@@ -34,17 +34,7 @@ fun getHands(lines: List<String>): List<Hand> {
         .map { Hand(it[0].toCharArray(), it[1].toInt()) }
 }
 
-fun getPart1Result(hands: List<Hand>): Int {
-    hands.sortedBy(Hand::getHandScore)
-        .forEach{ println("$it - ${it.getHandType()} - ${it.getHandScore()}") }
-    return hands.sortedBy (Hand::getHandScore)
-        .mapIndexed { index, hand ->  ((index + 1) * hand.bid)}
-        .sum()
-}
-
-fun getPart2Result(hands: List<Hand>): Int {
-    hands.sortedBy(Hand::getHandScore)
-        .forEach{ println("$it - ${it.getHandType()} - ${it.getHandScore()}") }
+fun getBidScore(hands: List<Hand>): Int {
     return hands.sortedBy (Hand::getHandScore)
         .mapIndexed { index, hand ->  ((index + 1) * hand.bid)}
         .sum()
@@ -74,11 +64,11 @@ fun isFullHouse(charArray: CharArray): Boolean {
     if (charArray.size != 5) {
         throw IllegalArgumentException("Incorrect hand size")
     }
-    if (!jacksWild || !charArray.contains('J')) {
-        val charCounts = getAscendingCardCounts(charArray)
-        return (charCounts[0] == 2 && charCounts[1] == 3)
+    if (jacksWild && charArray.count { it == 'J' } == 1) {
+        return (isTwoPair(charArray))
     }
-    return (isTwoPair(charArray))
+    val charCounts = getAscendingCardCounts(charArray)
+    return (charCounts[0] == 2 && charCounts[1] == 3)
 
 }
 
@@ -107,7 +97,7 @@ enum class HandType(val rank: Int) {
     HIGH_CARD(0),
 }
 
-val charToPoints = mapOf(
+val charToPointsNormalJacks = mapOf(
     '2' to 1,
     '3' to 2,
     '4' to 3,
@@ -142,6 +132,7 @@ val charToPointsJacksWild = mapOf(
 data class Hand (val charArray: CharArray, val bid: Int) {
 
     fun getHandScore(): Int {
+        val charToPoints = if (jacksWild) charToPointsJacksWild else charToPointsNormalJacks
         getMaxCharacterCount(charArray)
         var totalScore = getHandType().rank
         for (char in charArray) {
