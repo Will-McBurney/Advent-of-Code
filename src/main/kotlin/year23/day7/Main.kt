@@ -1,9 +1,6 @@
 package year23.day7
 
-
-
 fun main() {
-
     val startTime = System.currentTimeMillis()
 
     val hands = getHandsFromFilename("input.txt")
