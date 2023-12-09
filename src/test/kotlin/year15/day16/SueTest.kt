@@ -1,7 +1,7 @@
 package year15.day16
 
 import org.junit.jupiter.api.Test
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class SueTest {
 
@@ -9,21 +9,7 @@ class SueTest {
     fun isPossibleTest_True_Present() {
         val sue = Sue(1)
         sue.addStuffCount("cats", 4)
-        assertTrue(sue.isPossiblePart1("cats", 4))
-    }
-
-    @Test
-    fun isPossibleTest_True_Absent() {
-        val sue = Sue(1)
-        sue.addStuffCount("dogs", 4)
-        assertTrue(sue.isPossiblePart1("cats", 4))
-    }
-
-    @Test
-    fun isPossibleTest_False() {
-        val sue = Sue(1)
-        sue.addStuffCount("cat", 4)
-        assertTrue(sue.isPossiblePart1("cats", 3))
+        assertTrue(Part1SueChecker().isPossible(sue, mapOf("cats" to 4, "children" to 3, "dogs" to 7)))
     }
 
     @Test
@@ -32,6 +18,6 @@ class SueTest {
         sue.addStuffCount("cat", 4)
         sue.addStuffCount("children", 3)
         sue.addStuffCount("car", 8)
-        assertTrue(sue.isPossiblePart1(mapOf("cats" to 4, "children" to 3, "dogs" to 7)))
+        assertFalse(Part2SueChecker().isPossible(sue, mapOf("cats" to 4, "children" to 3, "dogs" to 7)))
     }
 }
