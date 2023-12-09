@@ -13,11 +13,11 @@ fun main() {
     val readEndTime = System.currentTimeMillis()
 
     //Do Part 1
-    val part1Result = getPart1Result(permutations, ingredients, maxTablespoons)
+    val part1Result = getPart1Result(permutations, ingredients)
     val part1EndTime = System.currentTimeMillis()
 
     //Do Part 2
-    val part2Result = getPart2Result(permutations, ingredients, maxTablespoons, targetCalories)
+    val part2Result = getPart2Result(permutations, ingredients, targetCalories)
     val part2EndTime = System.currentTimeMillis()
 
     //Display output
@@ -39,8 +39,6 @@ fun main() {
 
 val LINE_PATTERN = "([A-Za-z])+: capacity (-?[0-9]), durability (-?[0-9]), flavor (-?[0-9]), texture (-?[0-9]), calories (-?[0-9])".toRegex()
 
-private const val i1 = 4
-
 fun getIngredients(lines: List<String>): List<Ingredient> {
     return lines.map{ it.trim() }
         .filterNot { it.isEmpty() }
@@ -53,7 +51,7 @@ fun getIngredients(lines: List<String>): List<Ingredient> {
 }
 
 
-fun getPart1Result(permutations: List<List<Int>>, ingredients: List<Ingredient>, maxTablespoons: Int): Int {
+fun getPart1Result(permutations: List<List<Int>>, ingredients: List<Ingredient>): Int {
     return getBestPermutationScore(permutations, ingredients)
 }
 
@@ -68,7 +66,7 @@ private fun getWeightedSum(
     permutation: List<Int>,
     ingredients: List<Ingredient>
 ): MutableList<Int> {
-    var weightedSum = mutableListOf(0, 0, 0, 0)
+    val weightedSum = mutableListOf(0, 0, 0, 0)
     for (ingredientIndex in permutation.indices) {
         val count = permutation[ingredientIndex]
         for (i in 0..<4) {
@@ -99,8 +97,8 @@ fun getPermutationsHelper(columnsRemaining: Int, remainingTableSpoons: Int): Mut
     return outerPermutations
 }
 
-fun getPart2Result(permutations: List<List<Int>>, ingredients: List<Ingredient>,
-                   maxTablespoons: Int, targetCalories: Int): Int {
+fun getPart2Result(
+    permutations: List<List<Int>>, ingredients: List<Ingredient>, targetCalories: Int): Int {
     return getBestPermutationScore(permutations
         .filter { getTotalCalories(it, ingredients) == targetCalories }
         .toList(),
