@@ -26,19 +26,21 @@ fun main() {
         |Part Two:  %10d - Time %6d ms
         |
         |Total time - ${part2EndTime - startTime}ms
-        |""".trimMargin().format(readEndTime - startTime,
+        |""".trimMargin().format(
+            readEndTime - startTime,
             part1Result,
             part1EndTime - readEndTime,
             part2Result,
-            part2EndTime - part1EndTime)
+            part2EndTime - part1EndTime
+        )
     )
 }
 
 fun getNumberLists(lines: List<String>): List<List<Int>> {
-    return lines.map{ it.trim() }
+    return lines.map { it.trim() }
         .filterNot { it.isEmpty() }
         .map { it.split(" ") }
-        .map { list -> list.map { it.toInt() }}
+        .map { list -> list.map { it.toInt() } }
         .toList()
 }
 
@@ -51,7 +53,7 @@ fun getPart2Result(numbers: List<List<Int>>): Int {
 }
 
 fun getDifferences(input: List<Int>): List<Int> {
-    return (0..<input.size-1).map {index -> input[index + 1] - input[index]}
+    return (0..<input.size - 1).map { index -> input[index + 1] - input[index] }
 }
 
 enum class Direction {
@@ -61,8 +63,8 @@ enum class Direction {
 fun extrapolate(input: List<Int>, direction: Direction): Int {
     if (input.all { it == 0 }) return 0
     val extrapolation = extrapolate(getDifferences(input), direction)
-    return when(direction) {
-            Direction.FORWARDS -> extrapolation + input.last()
-            Direction.BACKWARDS -> input.first() - extrapolation
-        }
+    return when (direction) {
+        Direction.FORWARDS -> extrapolation + input.last()
+        Direction.BACKWARDS -> input.first() - extrapolation
+    }
 }
