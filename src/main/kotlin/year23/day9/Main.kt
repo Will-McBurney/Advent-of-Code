@@ -53,7 +53,7 @@ fun getPart2Result(numbers: List<List<Int>>): Int {
 }
 
 fun getDifferences(input: List<Int>): List<Int> {
-    return (0..<input.size - 1).map { index -> input[index + 1] - input[index] }
+    return (0..< input.size - 1).map { index -> input[index + 1] - input[index] }
 }
 
 enum class Direction {
