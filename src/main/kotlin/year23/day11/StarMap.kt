@@ -4,12 +4,12 @@ import kotlin.math.max
 import kotlin.math.min
 
 class StarMap(
-    val preGrid: List<List<Char>>,
-    val expansionFactor: Int
+    private val grid: List<List<Char>>,
+    private val expansionFactor: Int
 ) {
     private val emptyRows: List<Int> = getEmptyRows()
     private val emptyColumns: List<Int> = getEmptyColumns()
-    private val galaxyCoordinates: List<Coordinate> = getGalaxyPositions(preGrid);
+    private val galaxyCoordinates: List<Coordinate> = getGalaxyPositions(grid)
 
     private fun getGalaxyPositions(preGrid: List<List<Char>>): List<Coordinate> {
         val galaxyCoordinates = mutableListOf<Coordinate>()
@@ -22,17 +22,17 @@ class StarMap(
     }
 
     private fun getEmptyRows(): List<Int> {
-        return preGrid.indices.filter { index -> !preGrid[index].contains('#') }
+        return grid.indices.filter { index -> !grid[index].contains('#') }
             .toList()
     }
 
     private fun getEmptyColumns(): List<Int> {
-        return preGrid[0].indices.filter { isColumnEmpty(it) }
+        return grid[0].indices.filter { isColumnEmpty(it) }
             .toList()
     }
 
     private fun isColumnEmpty(columnIndex: Int): Boolean {
-        return preGrid.all { row -> row[columnIndex] == '.' }
+        return grid.all { row -> row[columnIndex] == '.' }
     }
 
     fun getSumOfShortestDistance(): Long {
@@ -59,6 +59,6 @@ class StarMap(
 
 
     override fun toString(): String {
-        return preGrid.joinToString("\n") { it.joinToString("") }
+        return grid.joinToString("\n") { it.joinToString("") }
     }
 }
