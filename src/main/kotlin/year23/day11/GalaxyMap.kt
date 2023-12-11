@@ -3,7 +3,7 @@ package year23.day11
 import kotlin.math.max
 import kotlin.math.min
 
-class StarMap(
+class GalaxyMap(
     private val grid: List<List<Char>>,
     private val expansionFactor: Int
 ) {
