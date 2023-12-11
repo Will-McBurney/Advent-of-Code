@@ -36,25 +36,24 @@ class StarMap(
     }
 
     fun getSumOfShortestDistance(): Long {
-        return galaxyCoordinates.map { a ->
-            galaxyCoordinates.filter { it != a }
-                .sumOf { getDistance(a, it) }
-        }.sum() / 2
+        return galaxyCoordinates.indices.sumOf { a ->
+            (a + 1 ..< galaxyCoordinates.size )
+                .sumOf { getDistance(galaxyCoordinates[a], galaxyCoordinates[it]) }
+        }
     }
 
     private fun getDistance(a: Coordinate, b: Coordinate): Long {
-        val minX = min(a.x, b.x)
-        val maxX = max(a.x, b.x)
-        val xDistance = (minX + 1..maxX).sumOf { rowIndex ->
-            if (emptyColumns.contains(rowIndex)) expansionFactor.toLong() else 1L
-        }
+        return  getLinearDistance(a.x, b.x, emptyColumns) +
+                getLinearDistance(a.y, b.y, emptyRows)
 
-        val minY = min(a.y, b.y)
-        val maxY = max(a.y, b.y)
-        val yDistance = (minY + 1..maxY).sumOf { columnIndex ->
-            if (emptyRows.contains(columnIndex)) expansionFactor.toLong() else 1L
+    }
+
+    private fun getLinearDistance(start: Int, end: Int, emptyList: List<Int>): Long {
+        val minIndex = min(start, end)
+        val maxIndex = max(start, end)
+        return (minIndex + 1..maxIndex).sumOf { columnIndex ->
+            if (emptyList.contains(columnIndex)) expansionFactor.toLong() else 1L
         }
-        return xDistance + yDistance
     }
 
 
