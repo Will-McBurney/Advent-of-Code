@@ -2,7 +2,9 @@ package year23.day7
 
 const val JACK = 'J'
 
-data class Hand (val charArray: CharArray, val bid: Int) {
+data class Hand (
+    val charArray:
+    CharArray, val bid: Int) {
 
     fun getHandScore(gameRules: GameRules): Int {
         val charToPoints = gameRules.cardPoints
