@@ -1,5 +1,7 @@
 package year23.day13
 
+import kotlin.math.max
+
 fun main() {
     val startTime = System.currentTimeMillis()
 
@@ -13,7 +15,7 @@ fun main() {
     val part1EndTime = System.currentTimeMillis()
 
     //Do Part 2
-    val part2Result = getPart2Result()
+    val part2Result = getPart2Result(patterns)
     val part2EndTime = System.currentTimeMillis()
 
     //Display output
@@ -52,19 +54,29 @@ fun getPatterns(lines: List<String>): List<Pattern> {
 fun getPart1Result(patterns: List<Pattern>): Int {
     var sum = 0;
     for (pattern in patterns) {
-        var rows = pattern.findHorizontalReflection()
         var columns = pattern.findVerticalReflection()
-        if (rows == -1) {
-            sum += 100 * columns
+        var rows = pattern.findHorizontalReflection()
+        if (columns == -1) {
+            sum += 100 * rows
         } else {
-            sum += rows;
+            sum += columns;
         }
-        println("$pattern - $rows - $columns")
     }
 
     return sum;
 }
 
-fun getPart2Result(): Int {
-    return 0
+fun getPart2Result(patterns: List<Pattern>): Int {
+    var sum = 0;
+    for (pattern in patterns) {
+        var columns = max(pattern.findVerticalReflectionSplitOnSmudge(), pattern.findVerticalReflectionSplitOffSmudge())
+        var rows = max(pattern.findHorizontalReflectionSplitOnSmudge(), pattern.findHorizontalReflectionSplitOffSmudge())
+        sum += if (columns == -1) {
+            100 * rows
+        } else {
+            columns;
+        }
+    }
+
+    return sum;
 }
