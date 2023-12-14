@@ -38,7 +38,7 @@ fun main() {
 
 fun getPlatform(lines: List<String>): SlidingPlatform {
     val gridState: MutableList<MutableList<Char>> = mutableListOf()
-    for (line in lines) {
+    lines.forEach { line ->
         val row: MutableList<Char> = line.toMutableList()
         gridState.add(row)
     }
@@ -47,7 +47,6 @@ fun getPlatform(lines: List<String>): SlidingPlatform {
 
 fun getPart1Result(startingPlatform: SlidingPlatform): Long {
     startingPlatform.slideUp()
-    //println(startingPlatform)
     return startingPlatform.getLoad()
 }
 
