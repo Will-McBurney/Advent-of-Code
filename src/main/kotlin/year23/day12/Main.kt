@@ -54,7 +54,7 @@ fun getRows(lines: List<String>): List<Row> {
 }
 
 fun getPart1Result(rows: List<Row>): Long {
-    return rows.parallelStream().mapToLong { it.getArrangementsCount() }.sum()
+    return rows.sumOf { it.getArrangementsCount() }
 }
 
 fun getPart2Result(): Long {
