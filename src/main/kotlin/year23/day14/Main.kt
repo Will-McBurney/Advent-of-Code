@@ -8,7 +8,6 @@ fun main() {
     val lines = reader.readLines()
     val part1Platform = getPlatform(lines)
     val part2Platform = getPlatform(lines)
-    //println(part1Platform)
     val readEndTime = System.currentTimeMillis()
 
     //Do Part 1
