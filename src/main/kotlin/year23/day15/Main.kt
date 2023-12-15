@@ -70,8 +70,6 @@ fun getPart2Result(input: List<String>): Int {
         }
     }
 
-    for(i in 0 .. 4) { println(array[i]) }
-
     return array.mapIndexed { arrayIndex, list ->
         (1 + arrayIndex) * list.mapIndexed { listIndex, lens ->
             ((1 + listIndex) * lens.second)
