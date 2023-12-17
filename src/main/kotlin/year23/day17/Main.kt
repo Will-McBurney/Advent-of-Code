@@ -1,6 +1,5 @@
 package year23.day17
 
-import year23.day16.Direction
 import java.util.*
 
 fun main() {
@@ -47,7 +46,7 @@ fun buildGrid(lines: List<String>): Grid {
     )
 }
 
-data class Node(val coordinate: Coordinate, val direction: Direction)
+
 fun getPart1Result(grid: Grid): Int {
     return djikstra(grid, 1, 3)
 }
@@ -56,6 +55,8 @@ fun getPart1Result(grid: Grid): Int {
 fun getPart2Result(grid: Grid): Int {
     return djikstra(grid, 4, 10)
 }
+
+data class Node(val coordinate: Coordinate, val direction: Direction)
 
 fun djikstra(grid: Grid, minEdgeLength: Int, maxEdgeLength: Int): Int {
     val startingPoint = Node(Coordinate(0, 0), Direction.NONE)

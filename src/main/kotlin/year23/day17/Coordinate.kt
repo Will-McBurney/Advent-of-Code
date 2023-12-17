@@ -1,7 +1,5 @@
 package year23.day17
 
-import year23.day16.Direction
-
 data class Coordinate(val row: Int, val column: Int) {
     fun getDirectionTo(coordinate: Coordinate): Direction {
         val dRow = coordinate.row - row
