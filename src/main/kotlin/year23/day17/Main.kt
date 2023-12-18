@@ -52,8 +52,8 @@ fun getPart1Result(grid: Grid): Int {
 }
 
 
-fun getPart2Result(grid: Grid): Int {
-    return djikstra(grid, 4, 10)
+fun getPart2Result(grid: Grid): Int  {
+    return  djikstra(grid, 4, 10)
 }
 
 data class Node(val coordinate: Coordinate, val direction: Direction)
@@ -76,7 +76,7 @@ fun djikstra(grid: Grid, minEdgeLength: Int, maxEdgeLength: Int): Int {
         }
         val edges = grid.getEdges(node.coordinate, minEdgeLength, maxEdgeLength)
         for (edge in edges) {
-            if (edge.second in previousPath[node]!!) { continue }
+            if (edge.second in previousPath[node]!!) { continue } //skip if our path has already visited this node
             val newNodeDirection = node.coordinate.getDirectionTo(edge.second)
             val newNode = Node(edge.second, newNodeDirection)
             val newNodeWeight = bestWeights[node]!! + grid.getWeight(Pair(node.coordinate, newNode.coordinate)) + getDirectionWeight(node.direction, newNodeDirection)
