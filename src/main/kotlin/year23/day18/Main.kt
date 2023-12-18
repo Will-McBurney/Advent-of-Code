@@ -43,11 +43,11 @@ fun getCommands(lines: List<String>): List<Command> {
         .map{groups -> Command(getDirection(groups[1]), groups[2].toInt(), Color.decode(groups[3].uppercase()))}
 }
 
-fun buildLoop(commands: List<Command>): Loop {
+/**fun buildLoop(commands: List<Command>): Loop {
     val loop = Loop()
     commands.forEach { command -> loop.addEdge(command.direction, command.distance, command.color) }
     return loop
-}
+}*/
 
 fun getDirection(directionString: String): Direction {
     return when(directionString) {
