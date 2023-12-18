@@ -18,10 +18,10 @@ class Loop {
     val size: Int
         get() = edgeCoordinates.size
 
-    fun getRowRange(): IntRange =
+    fun getRowRange(): LongRange =
         (edgeCoordinates.keys.minOf { coordinate -> coordinate.row } .. edgeCoordinates.keys.maxOf { coordinate -> coordinate.row })
 
-    fun getColumnRange(): IntRange =
+    fun getColumnRange(): LongRange =
         (edgeCoordinates.keys.minOf { coordinate -> coordinate.col } .. edgeCoordinates.keys.maxOf { coordinate -> coordinate.col })
 
     override fun toString(): String {

@@ -1,7 +1,5 @@
 package year23.day18
 
-import java.awt.Color
-
 fun main() {
     val startTime = System.currentTimeMillis()
 
@@ -16,7 +14,7 @@ fun main() {
     val part1EndTime = System.currentTimeMillis()
 
     //Do Part 2
-    val part2Result = getPart2Result()
+    val part2Result = getPart2Result(commands)
     val part2EndTime = System.currentTimeMillis()
 
     //Display output
@@ -36,19 +34,12 @@ fun main() {
     )
 }
 
-val linePattern = "([RDLU]) ([0-9])+ \\((#[0-9a-f]{6})\\)".toRegex()
+val linePattern = "([RDLU]) ([0-9]+) \\((#[0-9a-f]{6})\\)".toRegex()
 
 fun getCommands(lines: List<String>): List<Command> {
     return lines.map{line:String -> linePattern.find(line)!!.groupValues}
-        .map{groups -> Command(getDirection(groups[1]), groups[2].toInt(), Color.decode(groups[3].uppercase()))}
+        .map{groups -> Command(getDirection(groups[1]), groups[2].toLong(), groups[3])}
 }
-
-/**fun buildLoop(commands: List<Command>): Loop {
-    val loop = Loop()
-    commands.forEach { command -> loop.addEdge(command.direction, command.distance, command.color) }
-    return loop
-}*/
-
 fun getDirection(directionString: String): Direction {
     return when(directionString) {
         "U" -> Direction.UP
@@ -59,10 +50,10 @@ fun getDirection(directionString: String): Direction {
     }
 }
 
-fun getPart1Result(commands: List<Command>): Int {
+fun getPart1Result(commands: List<Command>): Long {
     var coordinate = Coordinate(0, 0)
-    var perimeter = 0
-    var area = 0
+    var perimeter = 0L
+    var area = 0L
     for(command in commands) {
         val newRow = coordinate.row + (command.direction.dRow * command.distance)
         val newCol = coordinate.col + (command.direction.dCol * command.distance)
@@ -74,6 +65,19 @@ fun getPart1Result(commands: List<Command>): Int {
     return area + (perimeter / 2) + 1
 }
 
-fun getPart2Result(): Int {
-    return 0
+fun getPart2Result(commands: List<Command>): Long {
+    var coordinate = Coordinate(0, 0)
+    var perimeter = 0L
+    var area = 0L
+    for(command in commands) {
+        val newRow = coordinate.row + (command.getPart2Direction().dRow * command.getPart2Distance())
+        val newCol = coordinate.col + (command.getPart2Direction().dCol * command.getPart2Distance())
+        coordinate = Coordinate(newRow, newCol)
+
+        perimeter += command.getPart2Distance()
+        area += coordinate.col * (command.getPart2Direction().dRow * command.getPart2Distance())
+    }
+    return area + (perimeter / 2L) + 1L
 }
+
+private fun direction(command: Command) = command.getPart2Direction()
