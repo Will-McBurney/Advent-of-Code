@@ -6,14 +6,13 @@ fun main() {
     val startTime = System.currentTimeMillis()
 
     //Read input
-    val reader = object {}.javaClass.getResourceAsStream("test_input2.txt")!!.bufferedReader()
+    val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
     val lines = reader.readLines()
     val commands = getCommands(lines)
-    val loop = buildLoop(commands)
     val readEndTime = System.currentTimeMillis()
 
     //Do Part 1
-    val part1Result = getPart1Result(loop)
+    val part1Result = getPart1Result(commands)
     val part1EndTime = System.currentTimeMillis()
 
     //Do Part 2
@@ -60,25 +59,19 @@ fun getDirection(directionString: String): Direction {
     }
 }
 
-fun getPart1Result(loop: Loop): Int {
-    val rowRange = loop.getRowRange()
-    val columnRange = loop.getColumnRange()
-    var count = 0 //counts spaces inside the loop, but not on the loop
-    rowRange.forEach { row ->
-        var insideLoop = false
-        columnRange.forEach { col ->
-            val coordinate = Coordinate(row, col)
-            val aboveCoordinate = Coordinate(row -1, col)
-            if (loop.contains(coordinate) && loop.contains(aboveCoordinate)) {
-                insideLoop = !insideLoop
-            }
-            if (!loop.contains(coordinate) && insideLoop) {
-                count++
-            }
-        }
-    }
+fun getPart1Result(commands: List<Command>): Int {
+    var coordinate = Coordinate(0, 0)
+    var perimeter = 0
+    var area = 0
+    for(command in commands) {
+        val newRow = coordinate.row + (command.direction.dRow * command.distance)
+        val newCol = coordinate.col + (command.direction.dCol * command.distance)
+        coordinate = Coordinate(newRow, newCol)
 
-    return count + loop.size
+        perimeter += command.distance
+        area += coordinate.col * (command.direction.dRow * command.distance)
+    }
+    return area + (perimeter / 2) + 1
 }
 
 fun getPart2Result(): Int {
