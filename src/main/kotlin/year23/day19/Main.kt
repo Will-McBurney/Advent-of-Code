@@ -108,5 +108,43 @@ private fun isAccepted(
 
 
 fun getPart2Result(workflows: Map<String, Workflow>): Long {
-    return 0
+    return workflowSearch(workflows, "in", PartRange((1..4000), (1..4000), (1..4000), (1..4000)))
+}
+
+fun workflowSearch(workflows: Map<String, Workflow>, workflowName: String, startingPartRange: PartRange): Long {
+    if ("A" == workflowName) {
+        return startingPartRange.getPartPossibilities()
+    }
+    if ("R" == workflowName) {
+        return 0
+    }
+    var sum = 0L
+    val workflow = workflows[workflowName]!!
+    var partRange = startingPartRange
+    for (index in workflow.letters.indices) {
+        val letter: Char = workflow.letters[index]
+        val greaterThan: Boolean = workflow.isGreaterThans[index]
+        val number: Int = workflow.numbers[index]
+        if (partRange.isFullRangeTrue(letter, greaterThan, number)) {
+            sum += workflowSearch(workflows, workflow.destinations[index], partRange)
+            partRange = PartRange.getEmptyPartRange()
+            break;
+        }
+        if (partRange.isFullRangeFalse(letter, greaterThan, number)) {
+            continue
+        }
+        assert(partRange.isSplitNeeded(letter, greaterThan, number))
+        val splitPartRanges = partRange.splitRange(letter, greaterThan, number)
+        if (greaterThan) {
+            partRange = splitPartRanges.first
+            sum += workflowSearch(workflows, workflow.destinations[index], splitPartRanges.second)
+        } else {
+            partRange = splitPartRanges.second
+            sum += workflowSearch(workflows, workflow.destinations[index], splitPartRanges.first)
+        }
+    }
+    if (!PartRange.isEmptyPartRange(partRange)) {
+        sum += workflowSearch(workflows, workflow.lastDestination, partRange)
+    }
+    return sum
 }
