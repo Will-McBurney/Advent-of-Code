@@ -63,26 +63,23 @@ fun getWorkflows(lines: List<String>): Map<String, Workflow> {
             break
         }
         val name = line.split("{")[0]
-        val rules = line.split("{")[1].removeSuffix("}").split(",")
-        val lastDestination = rules.last()
-        val destinations = rules.subList(0, rules.size - 1).map { rule -> rule.split(":")[1] }
-        val rulesParts: List<Triple<Char, Boolean, Int>> = rules.subList(0, rules.size - 1)
+        val rulesText = line.split("{")[1].removeSuffix("}").split(",")
+        val lastDestination = rulesText.last()
+        val destinations = rulesText.subList(0, rulesText.size - 1).map { rule -> rule.split(":")[1] }
+        val rules: List<Rule> = rulesText.subList(0, rulesText.size - 1)
             .map { rule -> rule.split(":")[0] }
             .map { string ->
                 if (string.contains(">")) {
                     val letter = string.split(">")[0].first()
                     val number = string.split(">")[1].toInt()
-                    return@map Triple(letter, true, number)
+                    return@map Rule(letter, Condition.GREATER_THAN, number)
                 } else {
                     val letter = string.split("<")[0].first()
                     val number = string.split("<")[1].toInt()
-                    return@map Triple(letter, false, number)
+                    return@map Rule(letter, Condition.LESS_THAN, number)
                 }
             }
-        val letters = rulesParts.map{ it.first }
-        val isGreaterThans = rulesParts.map { it.second }
-        val numbers = rulesParts.map { it.third }
-        workflowMap[name] = Workflow(name, letters, isGreaterThans, numbers, destinations, lastDestination)
+        workflowMap[name] = Workflow(name, rules, destinations, lastDestination)
         lineIndex++
     }
     return workflowMap
@@ -120,22 +117,21 @@ fun workflowSearch(workflows: Map<String, Workflow>, workflowName: String, start
     }
     var sum = 0L
     val workflow = workflows[workflowName]!!
+    val rules = workflow.rules
     var partRange = startingPartRange
-    for (index in workflow.letters.indices) {
-        val letter: Char = workflow.letters[index]
-        val greaterThan: Boolean = workflow.isGreaterThans[index]
-        val number: Int = workflow.numbers[index]
-        if (partRange.isFullRangeTrue(letter, greaterThan, number)) {
+    for (index in rules.indices) {
+        val rule = rules[index]
+        if (partRange.isFullRangeTrue(rule)) {
             sum += workflowSearch(workflows, workflow.destinations[index], partRange)
             partRange = PartRange.getEmptyPartRange()
             break
         }
-        if (partRange.isFullRangeFalse(letter, greaterThan, number)) {
+        if (partRange.isFullRangeFalse(rule)) {
             continue
         }
-        assert(partRange.isSplitNeeded(letter, greaterThan, number))
-        val splitPartRanges = partRange.splitRange(letter, greaterThan, number)
-        if (greaterThan) {
+        assert(partRange.isSplitNeeded(rule))
+        val splitPartRanges = partRange.splitRange(rule)
+        if (rule.isGreaterThan()) {
             partRange = splitPartRanges.first
             sum += workflowSearch(workflows, workflow.destinations[index], splitPartRanges.second)
         } else {

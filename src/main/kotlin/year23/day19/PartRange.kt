@@ -36,38 +36,38 @@ class PartRange(
         }
     }
 
-    fun isSplitNeeded(letter: Char, greaterThan: Boolean, number: Int): Boolean {
-        val targetNumber = if (greaterThan) { number } else { number - 1 }
-        val range = getRange(letter)
-        return range.first <= targetNumber && xRange.last > targetNumber
+    fun isSplitNeeded(rule: Rule): Boolean {
+        val targetNumber = if (rule.isGreaterThan()) { rule.number } else { rule.number - 1 }
+        val range = getRange(rule.letter)
+        return range.first <= targetNumber && range.last > targetNumber
     }
 
-    fun isFullRangeTrue(letter: Char, greaterThan: Boolean, number: Int): Boolean {
-        return if (greaterThan) {
-            getRange(letter).first > number
+    fun isFullRangeTrue(rule: Rule): Boolean {
+        return if (rule.isGreaterThan()) {
+            getRange(rule.letter).first > rule.number
         } else {
-            getRange(letter).last < number
+            getRange(rule.letter).last < rule.number
         }
     }
 
-    fun isFullRangeFalse(letter: Char, greaterThan: Boolean, number: Int): Boolean {
-        return if (greaterThan) {
-            getRange(letter).last <= number
+    fun isFullRangeFalse(rule:Rule): Boolean {
+        return if (rule.isGreaterThan()) {
+            getRange(rule.letter).last <= rule.number
         } else {
-            getRange(letter).first >= number
+            getRange(rule.letter).first >= rule.number
         }
     }
 
     /**
      * Split a PartRange into two PartRanges. The "lower" value comes first, the "higher" value comes second
      */
-    fun splitRange(letter: Char, greaterThan: Boolean, number: Int): Pair<PartRange, PartRange> {
-        val maxLowerRange = if (greaterThan) { number } else { number - 1 }
+    fun splitRange(rule: Rule): Pair<PartRange, PartRange> {
+        val maxLowerRange = if (rule.isGreaterThan()) { rule.number } else { rule.number - 1 }
         val xRange = this.xRange
         val mRange = this.mRange
         val aRange = this.aRange
         val sRange = this.sRange
-        when(letter) {
+        when(rule.letter) {
             'x' -> {
                 val lowerRange = xRange.first .. maxLowerRange
                 val higherRange = maxLowerRange + 1 .. xRange.last
@@ -101,7 +101,7 @@ class PartRange(
                 )
             }
         }
-        throw IllegalArgumentException("Invalid letter: $letter")
+        throw IllegalArgumentException("Invalid letter: ${rule.letter}")
     }
 
     fun getPartPossibilities(): Long {
