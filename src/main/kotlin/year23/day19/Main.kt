@@ -1,54 +1,65 @@
 package year23.day19
 
 fun main() {
-    val startTime = System.currentTimeMillis()
+    val startTime = System.nanoTime()
 
     //Read input
     val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
     val lines = reader.readLines()
     val workflows: Map<String, Workflow> = getWorkflows(lines)
     val parts: List<Part> = getParts(lines)
-    val readEndTime = System.currentTimeMillis()
+    val readEndTime = System.nanoTime()
 
     //Do Part 1
     val part1Result = getPart1Result(workflows, parts)
-    val part1EndTime = System.currentTimeMillis()
+    val part1EndTime = System.nanoTime()
 
     //Do Part 2
     val part2Result = getPart2Result(workflows)
-    val part2EndTime = System.currentTimeMillis()
+    val part2EndTime = System.nanoTime()
 
     //Display output
     println(
         """
-        |Read Time: %10d ms
+        |Read Time: %10d %ss
         |
-        |Part One:  %10d - Time %6d ms
-        |Part Two:  %10d - Time %6d ms
+        |Part One:  %20d - Time %10d %ss
+        |Part Two:  %20d - Time %10d %ss
         |
         |Total time - ${part2EndTime - startTime}ms
-        |""".trimMargin().format(readEndTime - startTime,
-            part1Result,
-            part1EndTime - readEndTime,
-            part2Result,
-            part2EndTime - part1EndTime)
+        |""".trimMargin().format(
+            (readEndTime - startTime) / 1000,
+            '\u00b5'.toString(),
+            part1Result / 1000,
+            (part1EndTime - readEndTime) / 1000,
+            '\u00b5'.toString(),
+            part2Result / 1000,
+            (part2EndTime - part1EndTime) / 1000,
+            '\u00b5'.toString()
+        )
     )
 }
 
 fun getParts(lines: List<String>): List<Part> {
     val parts: MutableList<Part> = mutableListOf()
     var lineIndex = 0
-    while(true) {
-        if (lines[lineIndex].isBlank()) {break}
+    while (true) {
+        if (lines[lineIndex].isBlank()) {
+            break
+        }
         lineIndex++
     }
     lineIndex++
-    while(lineIndex < lines.size) {
+    while (lineIndex < lines.size) {
         val split = lines[lineIndex].trim('{').trim('}').split(",")
-        parts.add(Part(split[0].substringAfter("=").toInt(),
-            split[1].substringAfter("=").toInt(),
-            split[2].substringAfter("=").toInt(),
-            split[3].substringAfter("=").toInt()))
+        parts.add(
+            Part(
+                split[0].substringAfter("=").toInt(),
+                split[1].substringAfter("=").toInt(),
+                split[2].substringAfter("=").toInt(),
+                split[3].substringAfter("=").toInt()
+            )
+        )
         lineIndex++
     }
     return parts
@@ -57,7 +68,7 @@ fun getParts(lines: List<String>): List<Part> {
 fun getWorkflows(lines: List<String>): Map<String, Workflow> {
     val workflowMap: MutableMap<String, Workflow> = mutableMapOf()
     var lineIndex = 0
-    while(true) {
+    while (true) {
         val line = lines[lineIndex]
         if (line.isBlank()) {
             break
@@ -102,7 +113,6 @@ private fun isAccepted(
 }
 
 
-
 fun getPart2Result(workflows: Map<String, Workflow>): Long =
     workflowSearch(workflows, "in", PartRange(1, 4000))
 
@@ -122,19 +132,18 @@ fun workflowSearch(workflows: Map<String, Workflow>, workflowName: String, start
         if (partRange.isFullRangeTrue(rule)) {
             sum += workflowSearch(workflows, workflow.destinations[index], partRange)
             partRange = PartRange.getEmptyPartRange()
-            break
-        }
-        if (partRange.isFullRangeFalse(rule)) {
+
+        } else if (partRange.isFullRangeFalse(rule)) {
             continue
-        }
-        assert(partRange.isSplitNeeded(rule))
-        val splitPartRanges = partRange.splitRange(rule)
-        if (rule.isGreaterThan()) {
-            partRange = splitPartRanges.first
-            sum += workflowSearch(workflows, workflow.destinations[index], splitPartRanges.second)
         } else {
-            partRange = splitPartRanges.second
-            sum += workflowSearch(workflows, workflow.destinations[index], splitPartRanges.first)
+            val splitPartRanges = partRange.splitRange(rule)
+            if (rule.isGreaterThan()) {
+                partRange = splitPartRanges.first
+                sum += workflowSearch(workflows, workflow.destinations[index], splitPartRanges.second)
+            } else {
+                partRange = splitPartRanges.second
+                sum += workflowSearch(workflows, workflow.destinations[index], splitPartRanges.first)
+            }
         }
     }
     if (!PartRange.isEmptyPartRange(partRange)) {
