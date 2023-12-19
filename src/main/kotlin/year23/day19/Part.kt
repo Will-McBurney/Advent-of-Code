@@ -15,4 +15,8 @@ data class Part(
             else -> throw IllegalArgumentException("Bad letter: char")
         }
     }
+
+    fun getSum(): Long {
+        return (x + m + a + s).toLong()
+    }
 }

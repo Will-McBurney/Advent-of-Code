@@ -1,7 +1,5 @@
 package year23.day19
 
-import java.util.function.Predicate
-
 fun main() {
     val startTime = System.currentTimeMillis()
 
@@ -68,29 +66,31 @@ fun getWorkflows(lines: List<String>): Map<String, Workflow> {
         val rules = line.split("{")[1].removeSuffix("}").split(",")
         val lastDestination = rules.last()
         val destinations = rules.subList(0, rules.size - 1).map { rule -> rule.split(":")[1] }
-        val predicates: List<Predicate<Part>> = rules.subList(0, rules.size - 1)
+        val rulesParts: List<Triple<Char, Boolean, Int>> = rules.subList(0, rules.size - 1)
             .map { rule -> rule.split(":")[0] }
             .map { string ->
                 if (string.contains(">")) {
                     val letter = string.split(">")[0].first()
                     val number = string.split(">")[1].toInt()
-                    return@map Predicate { p: Part -> p.getValue(letter) > number }
+                    return@map Triple(letter, true, number)
                 } else {
                     val letter = string.split("<")[0].first()
                     val number = string.split("<")[1].toInt()
-                    return@map Predicate { p: Part -> p.getValue(letter) < number }
+                    return@map Triple(letter, false, number)
                 }
             }
-        workflowMap[name] = Workflow(name, predicates, destinations, lastDestination)
+        val letters = rulesParts.map{ it.first }
+        val isGreaterThans = rulesParts.map { it.second }
+        val numbers = rulesParts.map { it.third }
+        workflowMap[name] = Workflow(name, letters, isGreaterThans, numbers, destinations, lastDestination)
         lineIndex++
     }
     return workflowMap
 }
 
 fun getPart1Result(workflows: Map<String, Workflow>, parts: List<Part>): Long {
-    return parts.parallelStream().filter { part:Part ->
-        return@filter isAccepted(part, workflows)
-    }.mapToLong {part:Part -> part.x.toLong() + part.m + part.a + part.s}
+    return parts.stream().filter { part:Part -> isAccepted(part, workflows)}
+        .mapToLong {part:Part -> part.getSum()}
         .sum()
 }
 
@@ -98,24 +98,14 @@ private fun isAccepted(
     part: Part,
     workflows: Map<String, Workflow>
 ): Boolean {
-    var workflow = "in"
-    while (workflow != "A" && workflow != "R") {
-        workflow = getDestination(part, workflows[workflow]!!)
+    var workflowLabel = "in"
+    while (workflowLabel != "A" && workflowLabel != "R") {
+        workflowLabel = workflows[workflowLabel]!!.getDestination(part)
     }
-    return workflow == "A"
+    return workflowLabel == "A"
 }
 
-fun getDestination(part: Part, workflow: Workflow): String {
-    var index = 0
-    while (index < workflow.rules.size) {
-        val predicate: Predicate<Part> = workflow.rules[index]
-        if (predicate.test(part)) {
-            return workflow.destinations[index]
-        }
-        index++
-    }
-    return workflow.lastDestination
-}
+
 
 fun getPart2Result(workflows: Map<String, Workflow>): Long {
     return 0
