@@ -86,9 +86,8 @@ fun getWorkflows(lines: List<String>): Map<String, Workflow> {
 }
 
 fun getPart1Result(workflows: Map<String, Workflow>, parts: List<Part>): Long {
-    return parts.stream().filter { part:Part -> isAccepted(part, workflows)}
-        .mapToLong {part:Part -> part.getSum()}
-        .sum()
+    return parts.filter { part: Part -> isAccepted(part, workflows) }
+        .sumOf { part: Part -> part.getSum() }
 }
 
 private fun isAccepted(
@@ -104,9 +103,8 @@ private fun isAccepted(
 
 
 
-fun getPart2Result(workflows: Map<String, Workflow>): Long {
-    return workflowSearch(workflows, "in", PartRange((1..4000), (1..4000), (1..4000), (1..4000)))
-}
+fun getPart2Result(workflows: Map<String, Workflow>): Long =
+    workflowSearch(workflows, "in", PartRange(1, 4000))
 
 fun workflowSearch(workflows: Map<String, Workflow>, workflowName: String, startingPartRange: PartRange): Long {
     if ("A" == workflowName) {
