@@ -30,10 +30,10 @@ fun main() {
         |""".trimMargin().format(
             (readEndTime - startTime) / 1000,
             '\u00b5'.toString(),
-            part1Result / 1000,
+            part1Result,
             (part1EndTime - readEndTime) / 1000,
             '\u00b5'.toString(),
-            part2Result / 1000,
+            part2Result,
             (part2EndTime - part1EndTime) / 1000,
             '\u00b5'.toString()
         )
