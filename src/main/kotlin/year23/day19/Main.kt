@@ -128,7 +128,7 @@ fun workflowSearch(workflows: Map<String, Workflow>, workflowName: String, start
         if (partRange.isFullRangeTrue(letter, greaterThan, number)) {
             sum += workflowSearch(workflows, workflow.destinations[index], partRange)
             partRange = PartRange.getEmptyPartRange()
-            break;
+            break
         }
         if (partRange.isFullRangeFalse(letter, greaterThan, number)) {
             continue
