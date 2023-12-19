@@ -26,44 +26,35 @@ class PartRange(
         }
     }
 
-    fun isSplitNeeded(letter: Char, greaterThan: Boolean, number: Int): Boolean {
-        val targetNumber = if (greaterThan) { number } else { number - 1 }
+    private fun getRange(letter: Char): IntRange {
         return when(letter) {
-            'x' -> xRange.first <= targetNumber && xRange.last > targetNumber
-            'm' -> mRange.first <= targetNumber && mRange.last > targetNumber
-            'a' -> aRange.first <= targetNumber && aRange.last > targetNumber
-            's' -> sRange.first <= targetNumber && sRange.last > targetNumber
-            else -> throw IllegalArgumentException("Bad letter: char - $letter")
-        }
-    }
-
-    fun isFullRangeTrue(letter: Char, greaterThan: Boolean, number: Int): Boolean {
-        val targetRange = when(letter) {
             'x' -> xRange
             'm' -> mRange
             'a' -> aRange
             's' -> sRange
             else -> throw IllegalArgumentException("Bad letter: char - $letter")
         }
+    }
+
+    fun isSplitNeeded(letter: Char, greaterThan: Boolean, number: Int): Boolean {
+        val targetNumber = if (greaterThan) { number } else { number - 1 }
+        val range = getRange(letter)
+        return range.first <= targetNumber && xRange.last > targetNumber
+    }
+
+    fun isFullRangeTrue(letter: Char, greaterThan: Boolean, number: Int): Boolean {
         return if (greaterThan) {
-            targetRange.first > number
+            getRange(letter).first > number
         } else {
-            targetRange.last < number
+            getRange(letter).last < number
         }
     }
 
     fun isFullRangeFalse(letter: Char, greaterThan: Boolean, number: Int): Boolean {
-        val targetRange = when(letter) {
-            'x' -> xRange
-            'm' -> mRange
-            'a' -> aRange
-            's' -> sRange
-            else -> throw IllegalArgumentException("Bad letter: char - $letter")
-        }
         return if (greaterThan) {
-            targetRange.last <= number
+            getRange(letter).last <= number
         } else {
-            targetRange.first >= number
+            getRange(letter).first >= number
         }
     }
 
@@ -72,10 +63,10 @@ class PartRange(
      */
     fun splitRange(letter: Char, greaterThan: Boolean, number: Int): Pair<PartRange, PartRange> {
         val maxLowerRange = if (greaterThan) { number } else { number - 1 }
-        var xRange = this.xRange
-        var mRange = this.mRange
-        var aRange = this.aRange
-        var sRange = this.sRange
+        val xRange = this.xRange
+        val mRange = this.mRange
+        val aRange = this.aRange
+        val sRange = this.sRange
         when(letter) {
             'x' -> {
                 val lowerRange = xRange.first .. maxLowerRange
@@ -114,16 +105,11 @@ class PartRange(
     }
 
     fun getPartPossibilities(): Long {
-        return getRangeSize('x').toLong() * getRangeSize('m') * getRangeSize('a') * getRangeSize('s')
+        return "xmas".map { letter -> getRangeSize(letter).toLong() }.reduce(Long::times)
     }
 
     fun getRangeSize(letter: Char): Int {
-        return when(letter) {
-            'x' -> xRange.last - xRange.first + 1 // + 1 because using inclusive ranges
-            'm' -> mRange.last - mRange.first + 1
-            'a' -> aRange.last - aRange.first + 1
-            's' -> sRange.last - sRange.first + 1
-            else -> throw IllegalArgumentException("Bad letter: char - $letter")
-        }
+        val range = getRange(letter)
+        return range.last - range.first + 1
     }
 }
