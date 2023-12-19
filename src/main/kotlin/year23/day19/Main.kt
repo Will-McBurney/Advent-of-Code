@@ -90,14 +90,20 @@ fun getWorkflows(lines: List<String>): Map<String, Workflow> {
 
 fun getPart1Result(workflows: Map<String, Workflow>, parts: List<Part>): Long {
     return parts.parallelStream().filter { part:Part ->
-        var workflow = "in"
-        while (workflow != "A" && workflow != "R") {
-            workflow = getDestination(part, workflows[workflow]!!)
-            println(workflow)
-        }
-        return@filter workflow == "A"
+        return@filter isAccepted(part, workflows)
     }.mapToLong {part:Part -> part.x.toLong() + part.m + part.a + part.s}
         .sum()
+}
+
+private fun isAccepted(
+    part: Part,
+    workflows: Map<String, Workflow>
+): Boolean {
+    var workflow = "in"
+    while (workflow != "A" && workflow != "R") {
+        workflow = getDestination(part, workflows[workflow]!!)
+    }
+    return workflow == "A"
 }
 
 fun getDestination(part: Part, workflow: Workflow): String {
@@ -112,6 +118,6 @@ fun getDestination(part: Part, workflow: Workflow): String {
     return workflow.lastDestination
 }
 
-fun getPart2Result(): Int {
+fun getPart2Result(workflows: Map<String, Workflow>): Long {
     return 0
 }
