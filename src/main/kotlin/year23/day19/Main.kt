@@ -8,7 +8,7 @@ fun main() {
     //Read input
     val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
     val lines = reader.readLines()
-    val workflows: Map<String, Workflow> = getWorkflows(lines);
+    val workflows: Map<String, Workflow> = getWorkflows(lines)
     val parts: List<Part> = getParts(lines)
     val readEndTime = System.currentTimeMillis()
 
@@ -17,7 +17,7 @@ fun main() {
     val part1EndTime = System.currentTimeMillis()
 
     //Do Part 2
-    val part2Result = getPart2Result()
+    val part2Result = getPart2Result(workflows)
     val part2EndTime = System.currentTimeMillis()
 
     //Display output
@@ -71,7 +71,6 @@ fun getWorkflows(lines: List<String>): Map<String, Workflow> {
         val predicates: List<Predicate<Part>> = rules.subList(0, rules.size - 1)
             .map { rule -> rule.split(":")[0] }
             .map { string ->
-                println(string)
                 if (string.contains(">")) {
                     val letter = string.split(">")[0].first()
                     val number = string.split(">")[1].toInt()
