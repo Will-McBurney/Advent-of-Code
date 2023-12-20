@@ -1,39 +1,44 @@
 package year23.day02
 
-import kotlin.math.max
+class Game(
+    val id: Int,
+    private val draws: List<Draw>
+) {
+    private val maximumColors : MutableMap<String, Int> = mutableMapOf()
 
-const val POSSIBLE_RED = 12
-const val POSSIBLE_GREEN = 13
-const val POSSIBLE_BLUE = 14
+    constructor(line: String): this(
+        line.substringBefore(":")
+            .substringAfter(" ")
+            .toInt(),
+        line.substringAfter(":")
+            .split(";")
+            .map{ string -> Draw(string) }
+    )
 
-class Game(val id: Int) {
-    var knownRed = 0
-    var knownBlue = 0
-    var knownGreen = 0
-
-    fun updateRed(redCount: Int) {
-        knownRed = max(knownRed, redCount);
+    init {
+        draws.forEach { draw ->
+            draw.map.forEach { (key, value) ->
+                this.add(key, value)
+            }
+        }
     }
 
-    fun updateBlue(blueCount: Int) {
-        knownBlue = max(knownBlue, blueCount)
+    fun get(color: String): Int = maximumColors.getOrDefault(color, 0)
+
+    fun add(color: String, minimum: Int) {
+        maximumColors[color] = minimum.coerceAtLeast(get(color))
     }
 
-    fun updateGreen(greenCount: Int) {
-        knownGreen = max(knownGreen, greenCount)
+    fun isPossible(bag: Map<String, Int>): Boolean {
+        return bag.all { entry ->
+            entry.value >= get(entry.key)
+        }
     }
 
-    fun isPossible(): Boolean {
-        return (knownRed <= POSSIBLE_RED) && (knownBlue <= POSSIBLE_BLUE) && (knownGreen <= POSSIBLE_GREEN)
-    }
-
-    fun getPower(): Int {
-        return knownRed * knownBlue * knownGreen
-    }
+    val power
+        get() = maximumColors.values.reduce(Int::times)
 
     override fun toString(): String {
-        return "Game(maxRed=$knownRed, maxBlue=$knownBlue, maxGreen=$knownGreen)"
+        return "Game(id=$id, draws=$draws, maximumColors=$maximumColors)"
     }
-
-
 }
