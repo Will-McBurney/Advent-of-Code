@@ -9,6 +9,7 @@ class Conjunction(
     fun addInput(name: String) {
         inputs[name] = Pulse.NONE
     }
+
     override fun getName(): String = name
 
     override fun getOutputs(): List<String> = outputList

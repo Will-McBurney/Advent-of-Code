@@ -89,7 +89,6 @@ fun getPart1Result(modules: Map<String, Module>, buttonPresses: Int): Long {
 
         }
     }
-    println("LOW: $lowPulseCount - HIGH: $highPulseCount")
     return lowPulseCount * highPulseCount.toLong()
 }
 
@@ -97,12 +96,10 @@ const val NOT_FOUND = -1L
 
 fun getPart2Result(modules: Map<String, Module>, moduleName: String): Long {
     var buttonPresses = 0L
-    var lastConjunction = modules.values.single { module -> module.getOutputs().contains(moduleName) }.getName()
-    println(lastConjunction)
-    var targets = modules.values.filter { module -> module.getOutputs().contains(lastConjunction) }.map { it.getName() }
-    println(targets)
-    var firstHits = targets.associateWith { NOT_FOUND }.toMutableMap()
-    var secondHits = targets.associateWith { NOT_FOUND }.toMutableMap()
+    val lastConjunction = modules.values.single { module -> module.getOutputs().contains(moduleName) }.getName()
+    val targets = modules.values.filter { module -> module.getOutputs().contains(lastConjunction) }.map { it.getName() }
+    val firstHits = targets.associateWith { NOT_FOUND }.toMutableMap()
+    val secondHits = targets.associateWith { NOT_FOUND }.toMutableMap()
 
 
     while(true) {
@@ -115,7 +112,6 @@ fun getPart2Result(modules: Map<String, Module>, moduleName: String): Long {
             val pulse = nextPulse.second
             val receiverName = nextPulse.third
             if ( pulse == Pulse.HIGH && targets.contains(senderName)) {
-                println("$senderName - $buttonPresses")
                 if (firstHits[senderName] == NOT_FOUND) {
                     firstHits[senderName] = buttonPresses
                 } else if (secondHits[senderName] == NOT_FOUND) {
