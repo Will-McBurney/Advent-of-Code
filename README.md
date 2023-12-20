@@ -4,10 +4,11 @@ Hi everyone, welcome to my advent of code repo. I discovered advent of code in D
 I plan to use this repo to write Advent of Code. For the time being, I plan to implement all solutions using the 
 [Kotlin programming language](https://kotlinlang.org/).
 
-## Current solved (last updated Dec 19, 2023)
+## Current solved (last updated Dec 20, 2023)
 
-* 2015 - 1 through 19 (I have passed 20, but I do not have code for a re-useable general purpose solution)
-* 2023 - 1 through 19
+* 2015 - 1 through 20
+* 2016 - 1 through 3
+* 2023 - 1 through 20
 
 ## Advent of Code
 
@@ -34,6 +35,8 @@ The following are my rules for considering a Part "done":
 2) I have cleaned up the code to ensure it is "readable" to my standards (that is, this code is at the level I would
 be willing to share it with my students as an example solution to a given problem. This doesn't include documentation
 3) I have removed any obvious bad optimizations (bad data structure choices, bad algorithms, unnecessary recalculations, etc.)
+
+These rules weren't initially established, and so I'm looking to clean up those early implementations.
 
 ## Feedback
 
