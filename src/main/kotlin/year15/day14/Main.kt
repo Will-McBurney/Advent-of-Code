@@ -5,7 +5,7 @@ fun main() {
     val inputTime = 1000
 
     //Read input
-    val reader = object {}.javaClass.getResourceAsStream("test_input.txt")!!.bufferedReader()
+    val reader = object {}.javaClass.getResourceAsStream("test_input1.txt")!!.bufferedReader()
     val lines = reader.readLines()
     val reindeer: List<Reindeer> = getReindeer(lines)
     println(reindeer)
