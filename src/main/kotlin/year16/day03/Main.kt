@@ -39,7 +39,7 @@ fun getTrianglesPart1(lines: List<String>): List<List<Int>> {
 }
 
 fun getTrianglesPart2(lines: List<String>): List<List<Int>> {
-    return (0 ..< lines.size step 3).map{lineNumber ->
+    return (lines.indices step 3).map{ lineNumber ->
         val triangleGrid = lines.subList(lineNumber, lineNumber + 3)
             .map(String::trim)
             .map {it.split(" ")
