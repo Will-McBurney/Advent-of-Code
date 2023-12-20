@@ -1,7 +1,5 @@
 package year23.day01
 
-const val MU_UNICODE = "\u03BC".toString()
-
 fun main() {
     val startTime = System.nanoTime()
 
@@ -25,16 +23,16 @@ fun main() {
 }
 
 private fun displayOutput(startTime: Long, readEndTime: Long, part1Result: Int, part1EndTime: Long, part2Result: Int, part2EndTime: Long) {
-    println("Input read time: ${elapsedMicroSeconds(startTime, readEndTime)} ${MU_UNICODE}s\n")
+    println("Input read time: ${elapsedMicroSeconds(startTime, readEndTime)} μs\n")
     println(
-        "Part 1: %15d - Time %10d  ${MU_UNICODE}s"
+        "Part 1: %15d - Time %10d  μs"
             .format(part1Result, elapsedMicroSeconds(readEndTime, part1EndTime))
     )
     println(
-        "Part 2: %15d - Time %10d  ${MU_UNICODE}s\n"
+        "Part 2: %15d - Time %10d  μs\n"
             .format(part2Result, elapsedMicroSeconds(part1EndTime, part2EndTime))
     )
-    println("Total time - ${elapsedMicroSeconds(startTime, part2EndTime)} ${MU_UNICODE}s")
+    println("Total time - ${elapsedMicroSeconds(startTime, part2EndTime)} μs")
 }
 
 fun elapsedMicroSeconds(start: Long, end: Long): Long = (end - start) / 1000

@@ -1,5 +1,3 @@
-const val MU_UNICODE = "\u03BC".toString()
-
 fun main() {
     val startTime = System.nanoTime()
 
@@ -18,12 +16,12 @@ fun main() {
     val part2EndTime = System.nanoTime()
 
     //Display output
-    println("Input read time: ${elapsedMicroSeconds(startTime, readEndTime)} ${MU_UNICODE}s\n")
-    println("Part 1: %15d - Time %10d  ${MU_UNICODE}s"
+    println("Input read time: ${elapsedMicroSeconds(startTime, readEndTime)} μs\n")
+    println("Part 1: %15d - Time %10d  μs"
         .format(part1Result, elapsedMicroSeconds(readEndTime, part1EndTime)))
-    println("Part 2: %15d - Time %10d  ${MU_UNICODE}s\n"
+    println("Part 2: %15d - Time %10d  μs\n"
         .format(part2Result, elapsedMicroSeconds(part1EndTime, part2EndTime)))
-    println("Total time - ${elapsedMicroSeconds(startTime, part2EndTime)} ${MU_UNICODE}s")
+    println("Total time - ${elapsedMicroSeconds(startTime, part2EndTime)} μs")
 }
 
 fun elapsedMicroSeconds(start: Long, end: Long): Long = (end - start) / 1000
