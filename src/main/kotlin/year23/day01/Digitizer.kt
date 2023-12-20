@@ -1,70 +1,58 @@
 package year23.day01
 
-import java.io.BufferedReader
+interface Digitizer {
+    fun getFirstDigit(inputString: String): Int
+    fun getLastDigit(inputString: String): Int
+}
 
-
-
-private val digitMap = mapOf(
-    "1" to 1,
-    "2" to 2,
-    "3" to 3,
-    "4" to 4,
-    "5" to 5,
-    "6" to 6,
-    "7" to 7,
-    "8" to 8,
-    "9" to 9,
-    "one" to 1,
-    "two" to 2,
-    "three" to 3,
-    "four" to 4,
-    "five" to 5,
-    "six" to 6,
-    "seven" to 7,
-    "eight" to 8,
-    "nine" to 9
-)
-
-fun getFirstDigit(inputString: String): Int {
-    var stringCopy = inputString;
-    var currentMatch: Int? = null
-    for (key in digitMap.keys) {
-        val startingIndex = stringCopy.indexOf(key)
-        if (startingIndex == 0) return digitMap[key]!!
-        if (startingIndex == -1) continue
-        currentMatch = digitMap[key]!!
-        stringCopy = stringCopy.slice(0.. startingIndex)
+class Part1Digitizer: Digitizer {
+    override fun getFirstDigit(inputString: String): Int {
+        return inputString.first { char -> isDigit(char) }.digitToInt()
     }
-    return currentMatch!!
-}
 
-fun getLastDigit(inputString: String): Int {
-    var stringCopy = inputString;
-    var currentMatch: Int? = null
-    for (key in digitMap.keys) {
-        val startingIndex = stringCopy.lastIndexOf(key)
-        if (startingIndex == -1) continue
-        if (startingIndex + key.length == stringCopy.length) return digitMap[key]!!
-        currentMatch = digitMap[key]!!
-        stringCopy = stringCopy.substring(startingIndex + 1)
+    override fun getLastDigit(inputString: String): Int {
+        return inputString.last { char -> isDigit(char) }.digitToInt()
     }
-    return currentMatch!!
+
+    private fun isDigit(char: Char): Boolean {
+        return char in ('0'..'9')
+    }
+
 }
 
-fun getCalibrationNumber(inputString: String) = 10 * getFirstDigit(inputString) + getLastDigit(inputString)
+class Part2Digitizer: Digitizer {
+    companion object {
+        val digitMap: Map<String, Int> = mapOf(
+            "1" to 1,
+            "2" to 2,
+            "3" to 3,
+            "4" to 4,
+            "5" to 5,
+            "6" to 6,
+            "7" to 7,
+            "8" to 8,
+            "9" to 9,
+            "one" to 1,
+            "two" to 2,
+            "three" to 3,
+            "four" to 4,
+            "five" to 5,
+            "six" to 6,
+            "seven" to 7,
+            "eight" to 8,
+            "nine" to 9
+        )
+    }
 
-fun getSum(reader: BufferedReader): Int {
-    return reader.lines()
-        .mapToInt { getCalibrationNumber(it) }
-        .sum()
+    override fun getFirstDigit(inputString: String): Int {
+        val firstDigit = digitMap.keys.filter {key -> inputString.contains(key)}
+            .minBy {key -> inputString.indexOf(key)}
+        return digitMap[firstDigit]!!
+    }
+
+    override fun getLastDigit(inputString: String): Int {
+        val firstDigit = digitMap.keys.filter {key -> inputString.contains(key)}
+            .maxBy {key -> inputString.lastIndexOf(key)}
+        return digitMap[firstDigit]!!
+    }
 }
-
-fun main() {
-    val startTime = System.currentTimeMillis();
-    val reader = object {}.javaClass.getResourceAsStream("day1_input.txt")!!.bufferedReader()
-    val sum = getSum(reader)
-    val endTime = System.currentTimeMillis();
-    print("Answer: $sum - Calculation time - ${endTime - startTime}ms")
-}
-
-
