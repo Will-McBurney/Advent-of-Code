@@ -1,8 +1,7 @@
 package year23.day20
 
 class Button(
-    private val outputList: List<String>,
-    private var tic: Int = 0
+    private val outputList: List<String>
 ): Module {
     override fun getName(): String = "broadcaster"
     override fun getOutputs(): List<String> = outputList

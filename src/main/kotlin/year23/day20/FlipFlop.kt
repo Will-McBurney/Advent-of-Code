@@ -2,8 +2,7 @@ package year23.day20
 
 class FlipFlop(
     private val name: String,
-    val outputList: List<String>,
-    private var tic: Int = 0
+    private val outputList: List<String>
 ): Module {
     private var isOn: Boolean = false
     override fun getName() = name

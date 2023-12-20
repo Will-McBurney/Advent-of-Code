@@ -17,7 +17,7 @@ fun main() {
     val part1EndTime = System.nanoTime()
 
     //Do Part 2
-    val part2Result = getPart2Result(modules, "rx", Pulse.LOW)
+    val part2Result = getPart2Result(modules, "rx")
     val part2EndTime = System.nanoTime()
 
     //Display output
@@ -95,7 +95,7 @@ fun getPart1Result(modules: Map<String, Module>, buttonPresses: Int): Long {
 
 const val NOT_FOUND = -1L
 
-fun getPart2Result(modules: Map<String, Module>, moduleName: String, targetPulse: Pulse): Long {
+fun getPart2Result(modules: Map<String, Module>, moduleName: String): Long {
     var buttonPresses = 0L
     var lastConjunction = modules.values.single { module -> module.getOutputs().contains(moduleName) }.getName()
     println(lastConjunction)

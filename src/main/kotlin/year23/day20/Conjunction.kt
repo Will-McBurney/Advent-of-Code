@@ -2,8 +2,7 @@ package year23.day20
 
 class Conjunction(
     private val name: String,
-    private val outputList: List<String>,
-    private var tic: Int = 0
+    private val outputList: List<String>
 ): Module {
     private val inputs: MutableMap<String, Pulse> = mutableMapOf()
 
