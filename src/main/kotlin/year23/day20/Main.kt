@@ -65,7 +65,6 @@ fun elapsedMicroSeconds(start: Long, end: Long): Long = (end - start) / 1000
 fun getPart1Result(modules: Map<String, Module>, buttonPresses: Int): Long {
     var lowPulseCount = 0L
     var highPulseCount = 0L
-    var currentTic = 0
     repeat(buttonPresses) {count ->
         println("Button press ${count + 1}")
         println("button -LOW-> broadcaster")
