@@ -7,16 +7,10 @@ class Button(
     override fun getName(): String = "broadcaster"
     override fun getOutputs(): List<String> = outputList
 
-    override fun getTic(): Int = tic
-    override fun setTic(tic: Int) {
-        this.tic = tic
+    override fun handlePulse(pulse: Pulse, source: String): Pulse {
+        if (pulse == Pulse.LOW && source == "button") {
+            return Pulse.LOW
+        }
+        return Pulse.NONE
     }
-
-    override fun incrementTic() { tic++ }
-
-    override fun handlePulse(pulse: Pulse, source: String) {}
-
-    override fun getNextPulse(): Pulse = if (tic == 0) Pulse.LOW else Pulse.NONE
-
-    override fun isDone(): Boolean  = true
 }
