@@ -32,7 +32,7 @@ The following are my rules for considering a Part "done":
    least-common-denominator based approach for Part 2, so my Part 2 wouldn't work on general input that 
    didn't allow for that.
    
-2) I have cleaned up the code to ensure it is "readable" to my standards (that is, this code is at the level I would
+2) I have cleaned up the code to ensure it is "readable" to my standards: that is, this code is at the level I would
 be willing to share it with my students as an example solution to a given problem. This doesn't include documentation
 3) I have removed any obvious bad optimizations (bad data structure choices, bad algorithms, unnecessary recalculations, etc.)
 
