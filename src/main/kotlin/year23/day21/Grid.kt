@@ -12,14 +12,38 @@ class Grid(
 
     var startingPosition: Coordinate
 
+    val distanceMap: MutableMap<Coordinate, Int> = mutableMapOf()
+
     init {
         val startingRowIndex = grid.indexOfFirst { row -> row.contains('S') }
         val startingColumnIndex = grid[startingRowIndex].indexOf('S')
         startingPosition = Coordinate(startingRowIndex, startingColumnIndex)
+        distanceMap[startingPosition] = 0
+    }
+
+    fun getEmptyRows(): List<Int> {
+        return grid.indices.filterNot {rowIndex -> grid[rowIndex].contains('#')}
+
+    }
+
+    fun getEmptyCols(): List<Int> {
+        return grid[0].indices.filterNot {
+            colIndex: Int -> grid.any {
+                row: List<Char> -> row[colIndex] == '#'
+            }
+        }
     }
 
     private fun getCellValue(coordinate: Coordinate): Char {
-        return grid[coordinate.row][coordinate.column]
+        return grid[positiveMod(coordinate.row, numRows)][positiveMod(coordinate.column, numCols)]
+    }
+
+    private fun positiveMod(number: Int, divisor: Int): Int {
+        var output = number % divisor
+        if (output < 0) {
+            output += divisor
+        }
+        return output
     }
 
     private fun isInBounds(coordinate: Coordinate): Boolean {
@@ -27,8 +51,8 @@ class Grid(
     }
 
     fun getEmptyNeighbors(coordinate: Coordinate): List<Coordinate> {
-        return Direction.entries.map {d: Direction ->
-            Coordinate(coordinate.row + d.dRow, coordinate.column + d.dCol)
+        return Direction.entries.map {
+            d: Direction -> Coordinate(coordinate.row + d.dRow, coordinate.column + d.dCol)
         }
             .filter { c: Coordinate -> isInBounds(c) }
             .filterNot { c: Coordinate ->  getCellValue(c) == '#'}
