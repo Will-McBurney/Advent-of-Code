@@ -99,6 +99,8 @@ fun dropBricks(bricks: List<Brick>): Int {
 
 }
 
+/** Brute force simulation, which I'm sure is slow, but it's fast enough for the input **/
+
 fun getPart2Result(bricks: List<Brick>): Int {
     val removableBricks = getRemovableBricks(bricks)
 
