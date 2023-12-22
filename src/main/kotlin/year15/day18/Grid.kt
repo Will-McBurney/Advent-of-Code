@@ -1,5 +1,4 @@
-import year15.day18.Coordinate
-
+package year15.day18
 
 class Grid(
     private var grid: List<List<Char>>

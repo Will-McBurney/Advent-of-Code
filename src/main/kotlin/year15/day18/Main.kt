@@ -1,7 +1,5 @@
 package year15.day18
 
-import Grid
-
 fun main() {
     val startTime = System.currentTimeMillis()
 

@@ -1,59 +1,76 @@
 package year16.day04
 
+import AoCResultPrinter
+import Reader
+
+const val year: Int = 16
+const val day: Int = 4
+
 fun main() {
-    val startTime = System.nanoTime()
+    val printer = AoCResultPrinter(year, day)
 
-    //Read input
-    val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
-    val lines = reader.readLines()
+    //Setup
+    val inputFilename = "input.txt"
+    val lines = Reader.getLines(year, day, inputFilename)
+    val rooms = getRooms(lines)
 
-    val readEndTime = System.nanoTime()
+    printer.endSetup()
 
     //Do Part 1
-    val part1Result = getPart1Result(lines)
-    val part1EndTime = System.nanoTime()
+    val part1Result = getPart1Result(rooms)
+    printer.endPart1()
 
     //Do Part 2
-    val part2Result = getPart2Result()
-    val part2EndTime = System.nanoTime()
+    val target: String = "northpole object storage"
+    val part2Result = getPart2Result(rooms, target)
+    printer.endPart2()
 
     //Display output
-    println("Input read time: ${elapsedMicroSeconds(startTime, readEndTime)} μs\n")
-    println("Part 1: %15d - Time %10d  μs"
-        .format(part1Result, elapsedMicroSeconds(readEndTime, part1EndTime)))
-    println("Part 2: %15d - Time %10d  μs\n"
-        .format(part2Result, elapsedMicroSeconds(part1EndTime, part2EndTime)))
-    println("Total time - ${elapsedMicroSeconds(startTime, part2EndTime)} μs")
+    printer.printResults(part1Result, part2Result)
 }
-
-fun elapsedMicroSeconds(start: Long, end: Long): Long = (end - start) / 1000
-
-
-
+data class Room (
+    val string: String,
+    val number: Int,
+    val expectedCheckSum: String
+)
 
 val roomRegex: Regex = "([a-z-]+)([0-9]{3})\\[([a-z]{5})]".toRegex()
 
-fun getPart1Result(lines: List<String>): Int {
-    return lines.map { line -> roomRegex.find(line)!!.groupValues }
-        .filter { groups -> isRealRoom(groups[1], groups[3]) }
-        .sumOf { groups -> groups[2].toInt() }
+fun getRooms(lines: List<String>): List<Room> {
+    return lines.map(String::trim)
+        .map { line -> roomRegex.find(line)!!.groupValues }
+        .map { groups -> Room(groups[1], groups[2].toInt(), groups[3])}
 }
 
-fun getPart2Result(): Int {
-    return 0
+fun getPart1Result(rooms: List<Room>): Int {
+    return rooms.filter(::isRealRoom)
+        .sumOf(Room::number)
 }
 
-fun isRealRoom(roomString: String, checkSum: String): Boolean {
-    val actual = roomString.filter { char -> '-' != char }
-        .associate {
-            char -> char to roomString.count { c -> c == char }
-        }
+fun getPart2Result(rooms: List<Room>, target: String): Int {
+    return rooms.first {room -> encryptCaesar(room.string, room.number) == target }
+        .number
+}
+
+fun encryptCaesar(input: String, shifts: Int): String {
+    return input.split("-")
+        .joinToString(" ") { token ->
+            token.map { c -> c.code - 'a'.code }
+            .map { c -> (c + (shifts % 26)) % 26 }
+            .map { c -> (c + 'a'.code).toChar() }
+            .joinToString("")
+        }.trim()
+
+}
+
+fun isRealRoom(room: Room): Boolean {
+    val actualCheckSum = room.string.filter { char -> '-' != char }
+        .associateWith { char -> room.string.count { c -> c == char } }
         .toList()
         .asSequence()
         .sortedWith(compareByDescending<Pair<Char, Int>>  { pair -> pair.second }.thenBy { pair -> pair.first })
         .take(5)
-        .map{ pair -> pair.first }
-        .joinToString("")
+        .joinToString("") { pair -> pair.first.toString() }
 
-    return actual == checkSum
+    return actualCheckSum == room.expectedCheckSum
 }

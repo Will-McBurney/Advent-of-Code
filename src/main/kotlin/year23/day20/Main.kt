@@ -8,7 +8,7 @@ fun main() {
     //Read input
     val reader = object {}.javaClass.getResourceAsStream("input.txt")!!.bufferedReader()
     val lines = reader.readLines()
-    val modules = getModules(lines)
+    var modules = getModules(lines)
 
     val readEndTime = System.nanoTime()
 
@@ -16,21 +16,27 @@ fun main() {
     val part1Result = getPart1Result(modules, 1000)
     val part1EndTime = System.nanoTime()
 
+    modules = getModules(lines) //reset
+
     //Do Part 2
     val part2Result = getPart2Result(modules, "rx")
     val part2EndTime = System.nanoTime()
 
     //Display output
     println("Input read time: ${elapsedMicroSeconds(startTime, readEndTime)} μs\n")
-    println("Part 1: %15d - Time %10d  μs"
-        .format(part1Result, elapsedMicroSeconds(readEndTime, part1EndTime)))
-    println("Part 2: %15d - Time %10d  μs\n"
-        .format(part2Result, elapsedMicroSeconds(part1EndTime, part2EndTime)))
+    println(
+        "Part 1: %15d - Time %10d  μs"
+            .format(part1Result, elapsedMicroSeconds(readEndTime, part1EndTime))
+    )
+    println(
+        "Part 2: %15d - Time %10d  μs\n"
+            .format(part2Result, elapsedMicroSeconds(part1EndTime, part2EndTime))
+    )
     println("Total time - ${elapsedMicroSeconds(startTime, part2EndTime)} μs")
 }
 
 fun getModules(lines: List<String>): Map<String, Module> {
-    val moduleMap = lines.associate{ line ->
+    val moduleMap = lines.associate { line ->
         val outputs = line.substringAfter(" -> ")
             .split(", ")
         if (line.startsWith("broadcaster")) {
@@ -47,10 +53,10 @@ fun getModules(lines: List<String>): Map<String, Module> {
         throw IllegalArgumentException("Bad line: $line")
     }
 
-    moduleMap.values.forEach {module ->
+    moduleMap.values.forEach { module ->
         when (module) {
             is FlipFlop -> {
-                module.getOutputs().forEach {name ->
+                module.getOutputs().forEach { name ->
                     when (val m = moduleMap[name]!!) {
                         is Conjunction -> m.addInput(module.getName())
                     }
@@ -67,7 +73,7 @@ fun elapsedMicroSeconds(start: Long, end: Long): Long = (end - start) / 1000
 fun getPart1Result(modules: Map<String, Module>, buttonPresses: Int): Long {
     var lowPulseCount = 0
     var highPulseCount = 0
-    repeat(buttonPresses) {count ->
+    repeat(buttonPresses) { count ->
         //Sender, Pulse, Receiver
         val queue: Queue<Triple<String, Pulse, String>> = LinkedList(listOf(Triple("button", Pulse.LOW, "broadcaster")))
         lowPulseCount++
@@ -78,7 +84,7 @@ fun getPart1Result(modules: Map<String, Module>, buttonPresses: Int): Long {
             val receiverName = nextPulse.third
             val receiver = modules[receiverName] ?: continue
             val receiverPulse = receiver.handlePulse(pulse, senderName)
-            when(receiverPulse) {
+            when (receiverPulse) {
                 Pulse.HIGH -> highPulseCount += receiver.getOutputs().size
                 Pulse.LOW -> lowPulseCount += receiver.getOutputs().size
                 Pulse.NONE -> continue
@@ -98,11 +104,10 @@ fun getPart2Result(modules: Map<String, Module>, moduleName: String): Long {
     var buttonPresses = 0L
     val lastConjunction = modules.values.single { module -> module.getOutputs().contains(moduleName) }.getName()
     val targets = modules.values.filter { module -> module.getOutputs().contains(lastConjunction) }.map { it.getName() }
-    val firstHits = targets.associateWith { NOT_FOUND }.toMutableMap()
-    val secondHits = targets.associateWith { NOT_FOUND }.toMutableMap()
+    val targetHits = targets.associateWith { NOT_FOUND }.toMutableMap()
 
 
-    while(true) {
+    while (true) {
         //Sender, Pulse, Receiver
         val queue: Queue<Triple<String, Pulse, String>> = LinkedList(listOf(Triple("button", Pulse.LOW, "broadcaster")))
         buttonPresses++
@@ -111,15 +116,14 @@ fun getPart2Result(modules: Map<String, Module>, moduleName: String): Long {
             val senderName = nextPulse.first
             val pulse = nextPulse.second
             val receiverName = nextPulse.third
-            if ( pulse == Pulse.HIGH && targets.contains(senderName)) {
-                if (firstHits[senderName] == NOT_FOUND) {
-                    firstHits[senderName] = buttonPresses
-                } else if (secondHits[senderName] == NOT_FOUND) {
-                    secondHits[senderName] = buttonPresses
+            if (pulse == Pulse.HIGH && targets.contains(senderName)) {
+                if (targetHits[senderName] == NOT_FOUND) {
+                    targetHits[senderName] = buttonPresses
                 }
 
-                if (secondHits.values.all { it != NOT_FOUND }) {
-                    return lcm(secondHits.keys.map{ key -> secondHits[key]!! - firstHits[key]!!})
+                if (targetHits.values.all { it != NOT_FOUND }) {
+                    println(targetHits)
+                    return lcm(targetHits.keys.map { key -> targetHits[key]!! })
                 }
             }
             val receiver = modules[receiverName] ?: continue
@@ -129,7 +133,6 @@ fun getPart2Result(modules: Map<String, Module>, moduleName: String): Long {
                 queue.add(Triple(receiverName, receiverPulse, outputName))
             }
         }
-
     }
 }
 
@@ -138,5 +141,5 @@ fun gcd(a: Long, b: Long): Long {
 }
 
 fun lcm(numbers: List<Long>): Long {
-    return numbers.fold(1L) {acc, item -> acc * (item / gcd(acc, item))}
+    return numbers.fold(1L) { acc, item -> acc * (item / gcd(acc, item)) }
 }

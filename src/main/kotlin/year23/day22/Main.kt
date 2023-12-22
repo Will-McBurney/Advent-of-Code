@@ -1,5 +1,11 @@
+package year23.day22
+
+import AoCResultPrinter
+import Reader
+import year16.day04.day
+
 const val year: Int = 23
-const val day: Int = 1
+const val day: Int = 22
 
 fun main() {
     val printer = AoCResultPrinter(year, day)
