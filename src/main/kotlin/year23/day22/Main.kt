@@ -104,9 +104,9 @@ fun dropBricks(bricks: List<Brick>): Int {
 fun getPart2Result(bricks: List<Brick>): Int {
     val removableBricks = getRemovableBricks(bricks)
 
-    return removableBricks.sumOf { brickToRemove: Brick ->
+    return removableBricks.parallelStream().mapToInt { brickToRemove: Brick ->
         val bricksCopy = bricks.map(Brick::clone)
             .filter { brick -> brick.id != brickToRemove.id }
-        return@sumOf dropBricks(bricksCopy)
-    }
+        return@mapToInt dropBricks(bricksCopy)
+    }.sum()
 }
