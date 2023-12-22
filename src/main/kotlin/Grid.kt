@@ -1,5 +1,5 @@
 class Grid<E>(
-    val grid: List<List<E>>
+    val grid: MutableList<MutableList<E>>
 ) {
     val rows: Int
         get() = grid.size
@@ -10,7 +10,7 @@ class Grid<E>(
     fun get(coordinate: GridCoordinate): E = grid[coordinate.row][coordinate.col]
 
     fun set(coordinate: GridCoordinate, value: E) {
-        grid[coordinate.row][coordinate.col]
+        grid[coordinate.row][coordinate.col] = value
     }
 
     fun isInBounds(coordinate: GridCoordinate): Boolean {
