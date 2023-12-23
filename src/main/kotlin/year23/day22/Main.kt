@@ -47,12 +47,11 @@ fun getBricks(lines: List<String>): List<Brick> {
 
 
 fun getPart1Result(bricks: List<Brick>): Int {
-    val removableBricks = getRemovableBricks(bricks)
-
-    return bricks.size - removableBricks.size
+    val nonRemovableBricks = getNonRemovableBricks(bricks)
+    return bricks.size - nonRemovableBricks.size
 }
 
-private fun getRemovableBricks(bricks: List<Brick>): List<Brick> {
+private fun getNonRemovableBricks(bricks: List<Brick>): List<Brick> {
     val removalBricks = bricks.map(Brick::supportedBy)
         .filter { set -> set.size == 1 }
         .flatten()
@@ -102,11 +101,13 @@ fun dropBricks(bricks: List<Brick>): Int {
 /** Brute force simulation, which I'm sure is slow, but it's fast enough for the input **/
 
 fun getPart2Result(bricks: List<Brick>): Int {
-    val removableBricks = getRemovableBricks(bricks)
-
+    val removableBricks = getNonRemovableBricks(bricks)
     return removableBricks.parallelStream().mapToInt { brickToRemove: Brick ->
         val bricksCopy = bricks.map(Brick::clone)
             .filter { brick -> brick.id != brickToRemove.id }
         return@mapToInt dropBricks(bricksCopy)
     }.sum()
 }
+
+
+
