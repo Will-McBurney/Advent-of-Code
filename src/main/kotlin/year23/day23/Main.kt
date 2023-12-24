@@ -40,13 +40,6 @@ fun getMaze(lines: List<String>): Grid<Char> {
     return Grid<Char>(lines.map { line -> line.toMutableList() }.toMutableList())
 }
 
-enum class MazeTile(val char: Char) {
-    EMPTY('.'),
-    WALL('#'),
-    DOWN_SLOPE('v'),
-    RIGHT_SLOPE('>');
-}
-
 val memo: MutableMap<GridCoordinate, Int> = mutableMapOf()
 val branchPoints: MutableSet<GridCoordinate> = mutableSetOf()
 val edges: MutableMap<Pair<GridCoordinate, GridCoordinate>, Int> = mutableMapOf()
@@ -84,17 +77,24 @@ fun dfsLongestDistance(
         val location = next.first
         val currentDistance = next.second
         val visited = next.third
+
+        //get successors
         val toSearch = edges.keys.filter { edge: Pair<GridCoordinate, GridCoordinate> -> location == edge.first}
             .filterNot {edge ->  visited.contains(edge.second)}
+
+        //check for ending
         val endingEdge = toSearch.filter { it: Pair<GridCoordinate, GridCoordinate> -> it.second == endingPoint }
-        assert(endingEdge.size <= 1) // cannot have multiple edges to the ending
         if (endingEdge.isNotEmpty()) {
             val endingDistance = currentDistance + edges[endingEdge.single()]!!
-            if (endingDistance > longestDistance) { longestDistance = endingDistance }
-        } else { //since the ending can only be reached from one branch, we do not search further
-            toSearch.forEach { edge ->
-                stack.push(Triple(edge.second, currentDistance + edges[edge]!!, visited + edge.second))
+            if (endingDistance > longestDistance) {
+                longestDistance = endingDistance
             }
+            continue
+        }
+
+        //add successors to search
+        toSearch.forEach { edge ->
+            stack.push(Triple(edge.second, currentDistance + edges[edge]!!, visited + edge.second))
         }
     }
 
