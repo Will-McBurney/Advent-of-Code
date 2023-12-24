@@ -38,13 +38,9 @@ fun getHailstones(lines: List<String>): List<Hailstone> {
         }
 }
 
-data class SpaceCoordinate(val x: Long, val y: Long, val z: Long) {
+data class SpaceCoordinate(val x: Long, val y: Long, val z: Long)
 
-}
-
-data class LinearVelocity (val dx: Long, val dy: Long, val dz: Long)  {
-
-}
+data class LinearVelocity (val dx: Long, val dy: Long, val dz: Long)
 
 data class Hailstone(
     val location: SpaceCoordinate,
