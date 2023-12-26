@@ -11,7 +11,6 @@ class Reader {
                     .bufferedReader()
                     .readLines()
             }
-            println(linesMemo[resourceFilename])
             return linesMemo[resourceFilename]!!
         }
 
