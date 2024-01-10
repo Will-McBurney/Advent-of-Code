@@ -1,4 +1,4 @@
-package year17.day1
+package year17.day01
 
 import AoCResultPrinter
 import Reader
