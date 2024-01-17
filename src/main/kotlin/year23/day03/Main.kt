@@ -1,8 +1,6 @@
 package year23.day03
 
 
-import kotlin.streams.asStream
-
 lateinit var lines: List<String>
 lateinit var grid: CharGrid
 var lineLength: Int = -1
@@ -32,12 +30,32 @@ fun main() {
 fun getPart1Result(): Int {
     return lines.asSequence()
         .mapIndexed{ index, line -> getSpecNumbersFromLine(line, index) }
-        .asStream().parallel()
-        .flatMap (List<SpecNumber>::stream)
-        .filter { hasAdjacentSymbol(it) }
-        .mapToInt(SpecNumber::value)
-        .sum()
+        .flatten()
+        .filter { specNumber -> hasAdjacentSymbol(specNumber) }
+        .sumOf { specNumber -> specNumber.value }
 }
+
+fun getPart1ResultLoop(): Int {
+    // get list of spec numbers from the input
+    val specNumbers: MutableList<SpecNumber> = mutableListOf()
+    for (lineNumber in lines.indices) {
+        val line = lines[lineNumber]
+        val lineSpecNumbers = getSpecNumbersFromLine(line, lineNumber)
+        for (spec in lineSpecNumbers) {
+            specNumbers.add(spec)
+        }
+    }
+
+    //return the sum of values for spec numbers with adjacent symbols
+    var sum = 0
+    for (s in specNumbers) {
+        if (hasAdjacentSymbol(s)) {
+            sum += s.value
+        }
+    }
+    return sum
+}
+
 
 const val numberMatchPattern = "[0-9]+"
 fun getSpecNumbersFromLine(line: String, lineNumber: Int): List<SpecNumber> {
@@ -47,8 +65,9 @@ fun getSpecNumbersFromLine(line: String, lineNumber: Int): List<SpecNumber> {
         specNumbers.add(SpecNumber(lineNumber, match.range.first, match.range.last, match.value.toInt()))
         match = match.next()
     }
-    return specNumbers.filter { hasAdjacentSymbol(it) }
+    return specNumbers
 }
+
 
 fun hasAdjacentSymbol(specNumber: SpecNumber): Boolean {
     return specNumber.getNeighbors(grid)
@@ -60,9 +79,7 @@ fun getPart2Result(): Int {
     val coordinateSpecNumberMap = lines.asSequence()
         .mapIndexed{index, line -> getSpecNumbersFromLine(line, index)}
         .flatten()
-        .map { specNumber ->
-            specNumber.getCoordinates().associateWith { specNumber }
-        }
+        .map { specNumber ->  specNumber.getCoordinates().associateWith { specNumber } }
         .flatMap { it.asSequence() }
         .associate { it.key to it.value }
 
