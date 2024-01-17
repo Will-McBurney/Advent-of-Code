@@ -35,27 +35,6 @@ fun getPart1Result(): Int {
         .sumOf { specNumber -> specNumber.value }
 }
 
-fun getPart1ResultLoop(): Int {
-    // get list of spec numbers from the input
-    val specNumbers: MutableList<SpecNumber> = mutableListOf()
-    for (lineNumber in lines.indices) {
-        val line = lines[lineNumber]
-        val lineSpecNumbers = getSpecNumbersFromLine(line, lineNumber)
-        for (spec in lineSpecNumbers) {
-            specNumbers.add(spec)
-        }
-    }
-
-    //return the sum of values for spec numbers with adjacent symbols
-    var sum = 0
-    for (s in specNumbers) {
-        if (hasAdjacentSymbol(s)) {
-            sum += s.value
-        }
-    }
-    return sum
-}
-
 
 const val numberMatchPattern = "[0-9]+"
 fun getSpecNumbersFromLine(line: String, lineNumber: Int): List<SpecNumber> {
