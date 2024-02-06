@@ -62,39 +62,39 @@ fun djikstra(grid: Grid, minEdgeLength: Int, maxEdgeLength: Int): Int {
     val startingPoint = Node(Coordinate(0, 0), Direction.NONE)
     val endingCoordinate = Coordinate(grid.numRows - 1, grid.numCols - 1)
 
-    val out: MutableSet<Node> = mutableSetOf()
     val bestWeights: MutableMap<Node, Int> = mutableMapOf(startingPoint to 0)
-    val previousPath: MutableMap<Node, List<Coordinate>> = mutableMapOf(startingPoint to emptyList<Coordinate>())
+    val previousPath: MutableMap<Node, List<Coordinate>> = mutableMapOf(startingPoint to emptyList())
 
     val queue: PriorityQueue<Node> = PriorityQueue<Node>(Comparator.comparing { node -> bestWeights[node]!! })
     queue.add(startingPoint)
 
     while (queue.isNotEmpty()) {
-        val node = queue.poll()
-        if (node.coordinate == endingCoordinate) {
-            return bestWeights[node]!!
+        val nextNode = queue.poll()
+        if (nextNode.coordinate == endingCoordinate) {
+            return bestWeights[nextNode]!!
         }
-        val edges = grid.getEdges(node.coordinate, minEdgeLength, maxEdgeLength)
-        for (edge in edges) {
-            if (edge.second in previousPath[node]!!) { continue } //skip if our path has already visited this node
-            val newNodeDirection = node.coordinate.getDirectionTo(edge.second)
+        val nextEdges = grid.getEdges(nextNode.coordinate, minEdgeLength, maxEdgeLength)
+        for (edge in nextEdges) {
+            if (edge.second in previousPath[nextNode]!!) { continue } //skip if our path has already visited this node
+            val newNodeDirection = nextNode.coordinate.getDirectionTo(edge.second)
             val newNode = Node(edge.second, newNodeDirection)
-            val newNodeWeight = bestWeights[node]!! + grid.getWeight(Pair(node.coordinate, newNode.coordinate)) + getDirectionWeight(node.direction, newNodeDirection)
+            val newNodeWeight = bestWeights[nextNode]!! +
+                    grid.getWeight(Pair(nextNode.coordinate, newNode.coordinate)) +
+                    getDirectionWeight(nextNode.direction, newNodeDirection)
             if (!bestWeights.containsKey(newNode) || bestWeights[newNode]!! > newNodeWeight) {
                 bestWeights[newNode] = newNodeWeight
-                previousPath[newNode] = previousPath[node]!! + node.coordinate.getPathCoordinates(newNode.coordinate)
+                previousPath[newNode] = previousPath[nextNode]!! +
+                        nextNode.coordinate.getPathCoordinates(newNode.coordinate)
                 queue.add(newNode)
             }
         }
-        out.add(node)
     }
     return -1
 }
 
+const val VERY_LARGE_WEIGHT = 10000
 fun getDirectionWeight(a: Direction?, b: Direction): Int {
-    return when (a) {
-        null -> 0
-        b -> 100
-        else -> 0
-    }
+    if (a == null) return 0
+    if (a == b) return VERY_LARGE_WEIGHT
+    return 0
 }
