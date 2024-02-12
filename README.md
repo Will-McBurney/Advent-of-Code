@@ -6,9 +6,10 @@ I plan to use this repo to write Advent of Code. For the time being, I plan to i
 
 ## Current solved (last updated Dec 20, 2023)
 
-* 2015 - 1 through 20
-* 2016 - 1 through 3
-* 2023 - 1 through 20
+* 2015 - 1 through 21
+* 2016 - 1 through 4
+* 2017 - 1 through 6
+* 2023 - Complete
 
 ## Advent of Code
 
