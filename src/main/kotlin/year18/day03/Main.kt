@@ -74,8 +74,10 @@ private fun getCoordinateCounts(sections: List<Section>) = sections.map { it.get
     }
 
 fun getPart2Result(sections: List<Section>, coordinateCounts: Map<Coordinate, Int>): Int {
-    return sections.single { section ->
+    val section = sections.single { section ->
         section.getCoordinates().all { c ->
             (coordinateCounts[c] ?: 0) == 1 }
-    }.id
+    }
+
+    return section.id
 }
