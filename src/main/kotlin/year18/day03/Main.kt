@@ -70,7 +70,7 @@ private fun getCoordinateCounts(sections: List<Section>) = sections.map { it.get
     .flatten()
     .fold(mutableMapOf<Coordinate, Int>()) { map, coordinate ->
         map[coordinate] = 1 + map.getOrDefault(coordinate, 0)
-        map
+        return@fold map
     }
 
 fun getPart2Result(sections: List<Section>, coordinateCounts: Map<Coordinate, Int>): Int {
