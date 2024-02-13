@@ -1,3 +1,6 @@
+import AoCResultPrinter
+import Reader
+
 const val year: Int = 23
 const val day: Int = 1
 
