@@ -1,5 +1,10 @@
 package year22.day02
 
+
+const val LOSS_SCORE = 0
+const val DRAW_SCORE = 3
+const val WIN_SCORE = 6
+
 enum class RPSThrow {
     ROCK,
     PAPER,
@@ -35,20 +40,20 @@ enum class RPSThrow {
     private fun getOutcomeScore(opponentThrow: RPSThrow): Int {
         return when(this){
             ROCK -> when(opponentThrow) {
-                ROCK -> DRAW
-                PAPER -> LOSS
-                SCISSORS -> WIN
+                ROCK -> DRAW_SCORE
+                PAPER -> LOSS_SCORE
+                SCISSORS -> WIN_SCORE
             }
 
             PAPER -> when(opponentThrow) {
-                ROCK -> WIN
-                PAPER -> DRAW
-                SCISSORS -> LOSS
+                ROCK -> WIN_SCORE
+                PAPER -> DRAW_SCORE
+                SCISSORS -> LOSS_SCORE
             }
             SCISSORS -> when(opponentThrow) {
-                ROCK -> LOSS
-                PAPER -> WIN
-                SCISSORS -> DRAW
+                ROCK -> LOSS_SCORE
+                PAPER -> WIN_SCORE
+                SCISSORS -> DRAW_SCORE
             }
         }
     }

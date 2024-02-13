@@ -29,9 +29,7 @@ fun main() {
     printer.printResults(part1Result, part2Result)
 }
 
-const val LOSS = 0
-const val DRAW = 3;
-const val WIN = 6;
+
 
 fun getPart1Result(lines: List<String>): Int {
     return lines.map { line -> line.split(" ") }
