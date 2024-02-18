@@ -44,7 +44,7 @@ data class Tree(
 
 fun getTreeGrid(lines: List<String>): Grid<Tree> {
     return Grid(
-        lines.map {row ->
+        lines.map { row ->
             row.map { char -> Tree(charToInt(char)) }
                 .toMutableList()
         }.toMutableList()
@@ -89,20 +89,27 @@ fun getPart2Result(treeGrid: Grid<Tree>): Int =
     treeGrid.coordinates.maxOf { coordinate -> getScenicScore(treeGrid, coordinate) }
 
 fun getScenicScore(treeGrid: Grid<Tree>, coordinate: GridCoordinate): Int {
-    val treeHeight = treeGrid.get(coordinate).height
-
     val scenicScore = CardinalDirection.entries.map { direction ->
-        var distance = 0
-        var currentCoordinate = coordinate.getMovement(direction)
-        while (treeGrid.isInBounds(currentCoordinate)) {
-            distance++
-            if (treeGrid.get(currentCoordinate).height >= treeHeight) {
-                return@map distance
-            }
-            currentCoordinate = currentCoordinate.getMovement(direction)
-        }
-        return@map distance
+        return@map getVisibleTrees(coordinate, direction, treeGrid)
     }.reduce(Int::times)
 
     return scenicScore
+}
+
+private fun getVisibleTrees(
+    startingCoordinate: GridCoordinate,
+    direction: CardinalDirection,
+    treeGrid: Grid<Tree>
+): Int {
+    val treeHeight = treeGrid.get(startingCoordinate).height
+    var visibleTrees = 0
+    var currentCoordinate = startingCoordinate.getMovement(direction)
+    while (treeGrid.isInBounds(currentCoordinate)) {
+        visibleTrees++
+        if (treeGrid.get(currentCoordinate).height >= treeHeight) {
+            return visibleTrees
+        }
+        currentCoordinate = currentCoordinate.getMovement(direction)
+    }
+    return visibleTrees
 }
