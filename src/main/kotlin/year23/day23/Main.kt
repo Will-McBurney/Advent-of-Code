@@ -103,11 +103,11 @@ fun dfsLongestDistance(
 
 
 fun getStartingPosition(maze: Grid<Char>): GridCoordinate =
-    (0..<maze.cols).map { colIndex: Int -> GridCoordinate(0, colIndex) }
+    (0..<maze.numCols).map { colIndex: Int -> GridCoordinate(0, colIndex) }
         .single { gc: GridCoordinate -> maze.get(gc) == MazeTile.EMPTY.char }
 
 fun getEndingPosition(maze: Grid<Char>): GridCoordinate =
-    (0..<maze.cols).map { colIndex: Int -> GridCoordinate(maze.rows - 1, colIndex) }
+    (0..<maze.numCols).map { colIndex: Int -> GridCoordinate(maze.numRows - 1, colIndex) }
         .single { gc: GridCoordinate -> maze.get(gc) == MazeTile.EMPTY.char }
 
 
