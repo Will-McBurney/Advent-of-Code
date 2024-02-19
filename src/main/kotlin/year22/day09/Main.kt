@@ -64,10 +64,13 @@ fun getTailLocationsCount(headMoves: List<HeadMove>, ropeLength: Int): Int {
         repeat(move.distance) {
             ropeCoordinates[0] = ropeCoordinates[0].getMovement(move.cardinalDirection)
 
-            for (followerIndex in 1 ..< ropeCoordinates.size) {
-                val newFollowerCoordinates = simulateRopeFollowing(ropeCoordinates, followerIndex)
-                if (ropeCoordinates[followerIndex] == newFollowerCoordinates) {
-                    break
+            for (followerIndex in 1..<ropeCoordinates.size) {
+                val newFollowerCoordinates = simulateRopeFollowing(
+                    leader = ropeCoordinates[followerIndex  - 1],
+                    follower = ropeCoordinates[followerIndex]
+                )
+                if (ropeCoordinates[followerIndex] == newFollowerCoordinates) { // if this knot didn't move
+                    break // no later knows moved
                 }
                 ropeCoordinates[followerIndex] = newFollowerCoordinates
             }
@@ -77,30 +80,28 @@ fun getTailLocationsCount(headMoves: List<HeadMove>, ropeLength: Int): Int {
     return tailHistory.size
 }
 
-private fun simulateRopeFollowing(ropeCoordinates: MutableList<GridCoordinate>, followerIndex: Int): GridCoordinate {
-    val leaderLocation = ropeCoordinates[followerIndex - 1]
-    val followerLocation = ropeCoordinates[followerIndex]
-    if (followerLocation != leaderLocation && !followerLocation.getOrdinalNeighbors().contains(leaderLocation)) {
-        return if (followerLocation.row + 2 == leaderLocation.row && followerLocation.col == leaderLocation.col) {
-                followerLocation.getMovement(CardinalDirection.DOWN)
-            } else if (followerLocation.row - 2 == leaderLocation.row && followerLocation.col == leaderLocation.col) {
-                followerLocation.getMovement(CardinalDirection.UP)
-            } else if (followerLocation.row == leaderLocation.row && followerLocation.col + 2 == leaderLocation.col) {
-                followerLocation.getMovement(CardinalDirection.RIGHT)
-            } else if (followerLocation.row == leaderLocation.row && followerLocation.col - 2 == leaderLocation.col) {
-                followerLocation.getMovement(CardinalDirection.LEFT)
-            } else if (leaderLocation.row > followerLocation.row && leaderLocation.col > followerLocation.col) {
-                followerLocation.getMovement(OrdinalDirection.DOWN_RIGHT)
-            } else if (leaderLocation.row < followerLocation.row && leaderLocation.col > followerLocation.col) {
-                followerLocation.getMovement(OrdinalDirection.UP_RIGHT)
-            } else if (leaderLocation.row > followerLocation.row && leaderLocation.col < followerLocation.col) {
-                followerLocation.getMovement(OrdinalDirection.DOWN_LEFT)
-            } else if (leaderLocation.row < followerLocation.row && leaderLocation.col < followerLocation.col) {
-                followerLocation.getMovement(OrdinalDirection.UP_LEFT)
-            } else {
-                throw IllegalStateException("Not possible")
-        }
+private fun simulateRopeFollowing(leader: GridCoordinate, follower: GridCoordinate): GridCoordinate {
+    return if (follower == leader || follower.getOrdinalNeighbors().contains(leader)) {
+        follower
+    } else if (follower.row + 2 == leader.row && follower.col == leader.col) {
+        follower.getMovement(CardinalDirection.DOWN)
+    } else if (follower.row - 2 == leader.row && follower.col == leader.col) {
+        follower.getMovement(CardinalDirection.UP)
+    } else if (follower.row == leader.row && follower.col + 2 == leader.col) {
+        follower.getMovement(CardinalDirection.RIGHT)
+    } else if (follower.row == leader.row && follower.col - 2 == leader.col) {
+        follower.getMovement(CardinalDirection.LEFT)
+    } else if (leader.row > follower.row && leader.col > follower.col) {
+        follower.getMovement(OrdinalDirection.DOWN_RIGHT)
+    } else if (leader.row < follower.row && leader.col > follower.col) {
+        follower.getMovement(OrdinalDirection.UP_RIGHT)
+    } else if (leader.row > follower.row && leader.col < follower.col) {
+        follower.getMovement(OrdinalDirection.DOWN_LEFT)
+    } else if (leader.row < follower.row && leader.col < follower.col) {
+        follower.getMovement(OrdinalDirection.UP_LEFT)
+    } else {
+        throw IllegalStateException("Not possible")
     }
-    return followerLocation
 }
+
 
