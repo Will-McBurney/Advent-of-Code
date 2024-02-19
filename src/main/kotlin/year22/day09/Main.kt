@@ -1,5 +1,9 @@
-const val year: Int = 23
-const val day: Int = 1
+package year22.day09
+
+import AoCResultPrinter
+import Reader
+const val year: Int = 22
+const val day: Int = 9
 
 
 

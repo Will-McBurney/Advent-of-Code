@@ -15,7 +15,7 @@ fun main() {
     val emptyLineIndex = lines.indexOf("")
 
     val stackCount = lines[emptyLineIndex - 1].split("\\s".toRegex())
-        .filter { it.trim().isNotEmpty() }
+        .filter { token -> token.trim().isNotEmpty() }
         .maxOf { string -> string.toInt() }
 
     val boxStacksPart1 = BoxStacks(stackCount)

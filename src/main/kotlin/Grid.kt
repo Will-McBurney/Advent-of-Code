@@ -31,7 +31,12 @@ class Grid<E>(
     }
 
     fun getCardinalNeighbors(coordinate: GridCoordinate): List<GridCoordinate> {
-        return CardinalDirection.entries.map { d -> coordinate.getMovement(d) }
+        return coordinate.getCardinalNeighbors()
+            .filter { c -> isInBounds(c) }
+    }
+
+    fun getOrdinalNeighbors(coordinate: GridCoordinate): List<GridCoordinate> {
+        return coordinate.getCardinalNeighbors()
             .filter { c -> isInBounds(c) }
     }
 
