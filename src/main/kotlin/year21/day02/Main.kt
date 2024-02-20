@@ -29,8 +29,8 @@ fun main() {
 }
 
 fun getPart1Result(lines: List<String>): Int {
-    var forward: Int = 0
-    var depth: Int = 0
+    var forward = 0
+    var depth = 0
 
     for (line in lines) {
         val magnitude: Int = line.substringAfter(" ").toInt()
@@ -45,9 +45,9 @@ fun getPart1Result(lines: List<String>): Int {
 }
 
 fun getPart2Result(lines: List<String>): Long {
-    var forward: Long = 0
-    var depth: Long = 0
-    var aim: Long = 0
+    var forward = 0L
+    var depth = 0L
+    var aim = 0L
 
     for (line in lines) {
         val magnitude: Int = line.substringAfter(" ").toInt()
