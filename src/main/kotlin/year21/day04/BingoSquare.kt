@@ -2,16 +2,12 @@ package year21.day04
 
 private const val BINGO_WIDTH = 5
 
-class BingoCard {
-    inner class BingoSquare(
-        val number: Int,
-        var marked: Boolean = false
-    )
-
+class BingoCard(lines: List<String>) {
     private var squares: List<BingoSquare>
+
     private var values: Set<Int>
     private var isWinner: Boolean = false //cache for isWinner()
-    constructor(lines: List<String>) {
+    init {
         assert(lines.size == BINGO_WIDTH)
         squares = lines.map { line ->
             line.trim().split("\\s".toRegex())
@@ -64,8 +60,9 @@ class BingoCard {
     private fun getUnmarkedSquareSum() = squares.filter { square -> !square.marked }
         .sumOf { square -> square.number }
 
-    override fun toString(): String {
-        return values.toString()
-    }
+    inner class BingoSquare(
+        val number: Int,
+        var marked: Boolean = false
+    )
 }
 
