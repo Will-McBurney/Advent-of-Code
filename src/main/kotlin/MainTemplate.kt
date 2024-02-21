@@ -1,6 +1,8 @@
 const val year: Int = 23
 const val day: Int = 1
 
+
+
 fun main() {
     val printer = AoCResultPrinter(year, day)
 

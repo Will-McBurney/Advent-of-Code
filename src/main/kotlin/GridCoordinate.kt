@@ -5,4 +5,16 @@ data class GridCoordinate(
     fun getMovement(direction: CardinalDirection): GridCoordinate {
         return GridCoordinate(row + direction.dRow, col + direction.dCol)
     }
+
+    fun getMovement(direction: OrdinalDirection): GridCoordinate {
+        return GridCoordinate(row + direction.dRow, col + direction.dCol)
+    }
+
+    fun getCardinalNeighbors(): List<GridCoordinate> {
+        return CardinalDirection.entries.map { d -> this.getMovement(d) }
+    }
+
+    fun getOrdinalNeighbors(): List<GridCoordinate> {
+        return OrdinalDirection.entries.map { d -> this.getMovement(d) }
+    }
 }
