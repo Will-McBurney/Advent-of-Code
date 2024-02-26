@@ -39,7 +39,7 @@ The following are my rules for considering a Part "done":
    didn't allow for that.
    
 2) I have cleaned up the code to ensure it is "readable" to my standards: that is, this code is at the level I would
-be willing to share it with my students as an example solution to a given problem. This doesn't include documentation
+be willing to share it with my students as an example solution to a given problem. This doesn't include documentation or testing (testing is often done ad hoc while writing the assignment, as speed is a factor here)
 3) I have removed any obvious bad optimizations (bad data structure choices, bad algorithms, unnecessary recalculations, etc.)
 
 These rules weren't initially established, and so I'm looking to clean up those early implementations.
