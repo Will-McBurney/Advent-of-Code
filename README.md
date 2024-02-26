@@ -8,8 +8,13 @@ I plan to use this repo to write Advent of Code. For the time being, I plan to i
 
 * 2015 - 1 through 21
 * 2016 - 1 through 4
-* 2017 - 1 through 6
-* 2023 - Complete
+* 2017 - 1 through 8
+* 2018 - 1 through 3
+* 2019 - none yet
+* 2020 - 1
+* 2021 - 1 through 9
+* 2022 - 1 through 9
+* 2023 - Completed
 
 ## Advent of Code
 
@@ -38,6 +43,10 @@ be willing to share it with my students as an example solution to a given proble
 3) I have removed any obvious bad optimizations (bad data structure choices, bad algorithms, unnecessary recalculations, etc.)
 
 These rules weren't initially established, and so I'm looking to clean up those early implementations.
+
+Note that not all of my solutions follow these rules. For example, in 2023 Day 24, my code was implemented
+to help me identify heavily trafficked edges to remove, but the removal was done manually to test if it
+resulted in a split graph.
 
 ## Feedback
 
