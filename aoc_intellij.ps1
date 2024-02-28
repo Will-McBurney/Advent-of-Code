@@ -5,11 +5,12 @@ Get-ChildItem src\main\kotlin\year$year\day$day -Filter *.kt |
             Write-Output "Opening $_ ..."
             idea64 $_.FullName
             Start-Sleep -Milliseconds 250
-        }
-Start-Sleep -Milliseconds 250
-Write-Output "Opening Input file ..."
-idea64 src\main\resources\year$year\day$day\input.txt
-Start-Sleep -Milliseconds 250
-Write-Output "Opening Test Input file ..."
-idea64 src\main\resources\year$year\day$day\test_input.txt
+        };
+
+Get-ChildItem src\main\resources\year$year\day$day -Filter *.txt |
+        ForEach-Object {
+            Write-Output "Opening $_ ..."
+            idea64 $_.FullName
+            Start-Sleep -Milliseconds 250
+        };
 
