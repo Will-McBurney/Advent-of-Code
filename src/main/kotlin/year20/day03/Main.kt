@@ -9,7 +9,6 @@ const val year: Int = 20
 const val day: Int = 3
 
 const val TREE = '#'
-const val OPEN = '.'
 
 val SLOPES = listOf(
     Pair(1, 1),
@@ -52,7 +51,7 @@ fun getGrid(lines: List<String>): Grid<Char> {
 
 fun getPart1Result(grid: Grid<Char>, right: Int, down: Int): Int {
     var currentPosition = GridCoordinate(0, 0)
-    var treeCount = 0;
+    var treeCount = 0
     while (currentPosition.row < grid.numRows) {
         if (grid.get(currentPosition) == TREE) {
             treeCount++
