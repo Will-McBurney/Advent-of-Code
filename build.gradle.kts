@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.0.0-Beta4"
+    kotlin("jvm") version "2.1.0"
 }
 
 group = "mcburney.aoc.twenty.three"
@@ -11,8 +11,8 @@ repositories {
 
 dependencies {
     implementation("org.json:json:20231013")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-RC")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.24")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
 
 tasks.test {
