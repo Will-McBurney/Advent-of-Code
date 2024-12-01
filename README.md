@@ -10,8 +10,8 @@ I plan to use this repo to write Advent of Code. For the time being, I plan to i
 * 2016 - 1 through 4
 * 2017 - 1 through 8
 * 2018 - 1 through 3
-* 2019 - none yet
-* 2020 - 1
+* 2019 - 1 through 2
+* 2020 - 1 through 2
 * 2021 - 1 through 9
 * 2022 - 1 through 9
 * 2023 - Completed
