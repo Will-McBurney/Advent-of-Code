@@ -1,7 +1,6 @@
 package year24.day01
 
 import AoCResultPrinter
-import Reader
 
 const val year: Int = 24
 const val day: Int = 1
@@ -11,13 +10,9 @@ const val day: Int = 1
 fun main() {
     val printer = AoCResultPrinter(year, day)
 
-    //Setup
-    val inputFilename = "test_input.txt"
-    val lines = Reader.getLines(year, day, inputFilename)
+    val arrays = (108457..562041).map{ it.toString().toCharArray() }
 
     printer.endSetup()
-
-    val arrays = (108457..562041).map{ it.toString().toCharArray() }
 
     //Do Part 1
     val part1Result = getPart1Result(arrays)
@@ -56,7 +51,7 @@ fun hasDoubleDigits(chars: CharArray): Boolean {
 }
 
 fun hasAtLeastOneDoubleDigits(chars: CharArray): Boolean {
-    var index = 0;
+    var index = 0
     while (index < chars.size - 1)
     {
         val targetChar = chars[index]
