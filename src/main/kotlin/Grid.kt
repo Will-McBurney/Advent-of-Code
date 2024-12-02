@@ -36,7 +36,7 @@ class Grid<E>(
     }
 
     fun getOrdinalNeighbors(coordinate: GridCoordinate): List<GridCoordinate> {
-        return coordinate.getCardinalNeighbors()
+        return coordinate.getOrdinalNeighbors()
             .filter { c -> isInBounds(c) }
     }
 
