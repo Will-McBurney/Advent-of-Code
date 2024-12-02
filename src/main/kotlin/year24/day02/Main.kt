@@ -50,22 +50,22 @@ fun isNearlySafe(reports: List<Int>): Boolean {
 
 fun isSafe(report: List<Int>): Boolean {
     require(report.size > 1){"Report of size 1 or less: $report"}
-    var increasing = false;
+    var increasing = false
     if (report[0] == report[1]) {
         return false
     }
     if (report[0] < report[1]) {
-        increasing = true;
+        increasing = true
     }
     (0 ..< report.size - 1).forEach { i ->
         if (increasing && report[i] >= report[i + 1]) {
             return false
         }
         if (!increasing && report[i] <= report[i + 1]) {
-            return false;
+            return false
         }
         if (abs(report[i] - report[i + 1]) > 3) {
-            return false;
+            return false
         }
     }
     return true
