@@ -50,20 +50,17 @@ fun main() {
     printer.printResults(part1Result, part2Result)
 }
 
-fun topographicalSort(pages: MutableList<Int>, map: MutableMap<Int, Set<Int>>): List<Int> {
-    val filteredMap = map.filter{ it.key in pages }.toMutableMap()
-    println(filteredMap)
+fun topographicalSort(orderedPairs: Map<Int, Set<Int>>): List<Int> {
+    val map = orderedPairs.toMutableMap()
     val sortedKeys = mutableListOf<Int>()
-    while (pages.isNotEmpty()) {
-        for (page in pages) {
-            if (filteredMap.values.all { !it.contains(page) }) {
+    while (map.isNotEmpty()) {
+        for (page in map.keys) {
+            if (map.values.all { !it.contains(page) }) {
                 sortedKeys.add(page)
                 println(page)
             }
         }
-        pages.remove(sortedKeys.last())
-        filteredMap.remove(sortedKeys.last())
-        println(pages)
+        map.remove(sortedKeys.last())
     }
     return sortedKeys
 }
@@ -79,9 +76,7 @@ fun getPart2Result(
 ): Int {
     val incorrectUpdates = updates.filterNot{ update -> isInOrder(update, orderedPairs) }
     return incorrectUpdates.map { update ->
-        fixUpdate(
-            update,
-            topographicalSort(update.toMutableList(), orderedPairs.toMutableMap()))
+        topographicalSort(orderedPairs.filter{ it.key in update})
     }
         .sumOf { update -> update[update.size / 2] }
 }
@@ -101,11 +96,4 @@ fun isInOrder(
         }
     }
     return true
-}
-
-fun fixUpdate(update: List<Int>, sortedPageNumbers: List<Int>): List<Int> {
-    println("fix: $update")
-    return update.map{ sortedPageNumbers.indexOf(it) }
-        .sorted()
-        .map { sortedPageNumbers[it] }
 }
