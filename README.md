@@ -4,17 +4,18 @@ Hi everyone, welcome to my advent of code repo. I discovered advent of code in D
 I plan to use this repo to write Advent of Code. For the time being, I plan to implement all solutions using the 
 [Kotlin programming language](https://kotlinlang.org/).
 
-## Current solved (last updated Dec 20, 2023)
+## Current solved (last updated Dec 4, 2024)
 
 * 2015 - 1 through 21
-* 2016 - 1 through 4
+* 2016 - 1 through 6
 * 2017 - 1 through 8
 * 2018 - 1 through 3
-* 2019 - 1 through 2
-* 2020 - 1 through 2
+* 2019 - 1 through 4
+* 2020 - 1 through 6
 * 2021 - 1 through 9
-* 2022 - 1 through 9
+* 2022 - 1 through 10
 * 2023 - Completed
+* 2024 - 1 through 4 (ongoing)
 
 ## Advent of Code
 
