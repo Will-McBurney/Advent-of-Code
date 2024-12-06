@@ -40,6 +40,10 @@ class Grid<E>(
             .filter { c -> isInBounds(c) }
     }
 
+    fun copy(): Grid<E> {
+        return Grid(grid.map{it.toMutableList()}.toMutableList())
+    }
+
     override fun iterator(): Iterator<E> {
         return grid.flatten().iterator()
     }
