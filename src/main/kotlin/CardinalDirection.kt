@@ -11,4 +11,20 @@ enum class CardinalDirection(val dRow: Int, val dCol: Int) {
             DOWN -> UP
             RIGHT -> LEFT
         }
+
+    val clockwise: CardinalDirection
+        get() = when(this) {
+            UP -> RIGHT
+            RIGHT -> DOWN
+            DOWN -> LEFT
+            LEFT -> UP
+        }
+
+    val counterClockwise: CardinalDirection
+        get() = when(this) {
+            UP -> LEFT
+            RIGHT -> UP
+            DOWN -> RIGHT
+            LEFT -> DOWN
+        }
 }
