@@ -88,6 +88,8 @@ fun getPart1Result(path: List<GridCoordinate>): Int {
     return path.size
 }
 
-fun getPart2Result(grid: Grid<Char>, guardStart: GridCoordinate, visited: List<GridCoordinate>): Int {
-    return visited.count { getPath(grid ,guardStart, it).isLoop }
+fun getPart2Result(grid: Grid<Char>, guardStart: GridCoordinate, visited: List<GridCoordinate>): Long {
+    return visited.parallelStream()
+        .filter { getPath(grid ,guardStart, it).isLoop  }
+        .count()
 }
