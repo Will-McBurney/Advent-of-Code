@@ -51,7 +51,7 @@ fun isPossible_P1(answer: Long, operands: List<Long>): Boolean {
     )
 }
 
-fun isPossible_P1(answer: Long, operands: List<Long>, current: Long, index: Int): Boolean {
+private fun isPossible_P1(answer: Long, operands: List<Long>, current: Long, index: Int): Boolean {
     if (current == answer && index == operands.size) {
         return true
     }
@@ -85,7 +85,7 @@ fun isPossible_P2(answer: Long, operands: List<Long>): Boolean {
     )
 }
 
-fun isPossible_P2(answer: Long, operands: List<Long>, current: Long, index: Int): Boolean {
+private fun isPossible_P2(answer: Long, operands: List<Long>, current: Long, index: Int): Boolean {
     if (current == answer && index == operands.size) {
         return true
     }
