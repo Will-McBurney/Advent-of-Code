@@ -45,7 +45,7 @@ fun getResult(
     getAntinodes: (GridCoordinate, GridCoordinate, Grid<Char>) -> List<GridCoordinate>
 ): Int {
     return antennaGroups.keys
-        .map() { getAntinodeList(antennaGroups[it]!!, grid, getAntinodes) }
+        .map { getAntinodeList(antennaGroups[it]!!, grid, getAntinodes) }
         .flatten()
         .distinct()
         .count()
@@ -58,7 +58,7 @@ fun getAntinodeList(
     grid: Grid<Char>,
     getAntinodes: (GridCoordinate, GridCoordinate, Grid<Char>) -> List<GridCoordinate>
 ): List<GridCoordinate> {
-    val antinodes = mutableListOf<GridCoordinate>();
+    val antinodes = mutableListOf<GridCoordinate>()
     for (i in coordinates.indices) {
         for (j in i + 1 until coordinates.size) {
             antinodes += getAntinodes(
@@ -90,7 +90,7 @@ fun getAntinodesPart2(
 ): List<GridCoordinate> {
     val dRow = b.row - a.row
     val dCol = b.col - a.col
-    val antinodes = mutableListOf<GridCoordinate>();
+    val antinodes = mutableListOf<GridCoordinate>()
     var aAntinode = a.copy()
     while (grid.isInBounds(aAntinode)) {
         antinodes.add(aAntinode)
