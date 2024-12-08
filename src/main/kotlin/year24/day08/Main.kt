@@ -58,17 +58,11 @@ fun getAntinodeList(
     grid: Grid<Char>,
     getAntinodes: (GridCoordinate, GridCoordinate, Grid<Char>) -> List<GridCoordinate>
 ): List<GridCoordinate> {
-    val antinodes = mutableListOf<GridCoordinate>()
-    for (i in coordinates.indices) {
-        for (j in i + 1 until coordinates.size) {
-            antinodes += getAntinodes(
-                coordinates[i],
-                coordinates[j],
-                grid
-            )
-        }
-    }
-    return antinodes
+    return coordinates.indices.map { i ->
+        (i + 1..<coordinates.size).map { j ->
+            getAntinodes(coordinates[i], coordinates[j], grid)
+        }.flatten()
+    } .flatten()
 }
 
 fun getAntinodesPart1(
