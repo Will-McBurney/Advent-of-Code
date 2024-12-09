@@ -73,8 +73,8 @@ fun getPart2Result(disc: List<Int>): Long {
     val fileIndices = mutableListOf<Pair<Int, Int>>()
 
     // map gapLength -> List of indices in ascending order
-    val gapIndexMap = mutableMapOf<Int, SortedSet<Int>>()
-    (1 .. 9).forEach { gapIndexMap[it] = sortedSetOf() }
+    val gapIndexMap = mutableMapOf<Int, PriorityQueue<Int>>()
+    (1 .. 9).forEach { gapIndexMap[it] = PriorityQueue() }
 
     val discArray = Array<Int>(disc.sum()){-1}
     var fileID = 0
@@ -102,16 +102,19 @@ fun getPart2Result(disc: List<Int>): Long {
             .filter{ entry -> entry.key >= length }
             .filter{ entry -> entry.value.isNotEmpty() }
             .map { entry -> entry.key to entry.value }
-            .minByOrNull { entry -> entry.second.first() }
+            .minByOrNull { entry -> entry.second.peek() }
 
         if (leftMostFit == null) {continue}
         val gapLength = leftMostFit.first
-        val gapIndex = leftMostFit.second.first()
+        val gapIndex = leftMostFit.second.poll()
         leftMostFit.second.remove(gapIndex)
         if (gapIndex > startingIndex) {continue}
         fileIndices[fileID] = Pair(gapIndex, length)
         (gapIndex ..< gapIndex + length).forEach {
             discArray[it] = fileID
+        }
+        (startingIndex ..< startingIndex + length).forEach {
+            discArray[it] = -1
         }
 
         val remainingGap = gapLength - length
@@ -120,26 +123,6 @@ fun getPart2Result(disc: List<Int>): Long {
             gapIndexMap[remainingGap]!!.add(newGapIndex)
         }
 
-        var leftGapStart = startingIndex
-        var rightGapStart = startingIndex + length
-        var leftGapLength = 0
-        var rightGapLength = 0
-        while (leftGapStart > 0 && discArray[leftGapStart - 1] == -1) {
-            leftGapLength++
-            leftGapStart--
-        }
-        while (rightGapStart + rightGapLength < discArray.size  && discArray[rightGapStart + rightGapLength] == -1) {
-            rightGapLength++
-        }
-        if (leftGapLength > 0) gapIndexMap[leftGapLength]!!.remove(leftGapStart)
-        if (rightGapLength > 0) gapIndexMap[rightGapLength]!!.remove(rightGapStart)
-
-        val fullGapLength = length + leftGapLength + rightGapLength
-        for (i in leftGapStart until leftGapStart + fullGapLength) {
-            discArray[i] = -1
-        }
-        gapIndexMap.putIfAbsent(fullGapLength, sortedSetOf())
-        gapIndexMap[fullGapLength]!!.add(leftGapStart)
     }
 
 
