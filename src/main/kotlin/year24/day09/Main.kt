@@ -72,7 +72,7 @@ fun getPart1Result(disc: List<Int>): Long {
 
 data class FileSection(
     val id: Int,
-    var firstIndex: Int,
+    var firstIndex: Long,
     val length: Int,
 )
 
@@ -80,12 +80,12 @@ fun getPart2Result(disc: List<Int>): Long {
     val fileSections = mutableListOf<FileSection>()
 
     // map gapLength -> priorityQueue of indices for gaps of that size
-    val gapIndexMap = mutableMapOf<Int, PriorityQueue<Int>>()
+    val gapIndexMap = mutableMapOf<Int, PriorityQueue<Long>>()
     (1 .. 9).forEach { gapIndexMap[it] = PriorityQueue() }
 
     var fileId = 0
     var isFile = true
-    var currentIndex = 0
+    var currentIndex = 0L
     for (sectionLength in disc) {
         if (isFile) {
             fileSections.add(FileSection(fileId, currentIndex, sectionLength))
@@ -123,15 +123,9 @@ fun getPart2Result(disc: List<Int>): Long {
         }
     }
 
-    fileSections.sortedBy { it.firstIndex }
-        .zipWithNext()
-        .filter { it.first.firstIndex + it.first.length > it.second.firstIndex}
-        .forEach { println(it) }
-
-
     return fileSections.sumOf { f ->
         (0 ..< f.length).sumOf { index ->
-            (f.id * (f.firstIndex + index)).toLong()
-        }.toLong()
+            (f.id * (f.firstIndex + index))
+        }
     }
 }
