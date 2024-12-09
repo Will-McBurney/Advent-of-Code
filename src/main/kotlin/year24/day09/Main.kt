@@ -3,7 +3,6 @@ package year24.day09
 import AoCResultPrinter
 import Reader
 import java.util.*
-import kotlin.concurrent.thread
 
 const val year: Int = 24
 const val day: Int = 9
@@ -25,20 +24,20 @@ fun main() {
     var part2Result = -1L
 
     //Do Part 1 Thread
-    val part1Thread = thread {
+    //val part1Thread = thread {
         part1Result = getPart1Result(disc)
         printer.endPart1()
-    }
+    //}
 
     //Do Part 2 Thread
-    val part2Thread = thread {
+    //val part2Thread = thread {
         part2Result = getPart2Result(disc)
         printer.endPart2()
-    }
+    //}
 
     //Wait for both to finish
-    part1Thread.join()
-    part2Thread.join()
+//    part1Thread.join()
+//    part2Thread.join()
 
     //Display output
     printer.printResults(part1Result, part2Result)
@@ -169,7 +168,7 @@ fun part2Bad(disc: IntArray): Long {
     fileId--
 
     while (fileId > 0) {
-        var gapIndex = 0;
+        var gapListIndex = 0
         for (gap in gaps) {
             val gapStartIndex = gap.first
 
@@ -178,15 +177,15 @@ fun part2Bad(disc: IntArray): Long {
             val gapLength = gap.second
             if (gapLength >= fileSections[fileId].length) {
                 fileSections[fileId].apply { firstIndex = gapStartIndex }
-                gaps.removeAt(gapIndex)
+                gaps.removeAt(gapListIndex)
                 // and new gap if needed
                 val remainingGap = gapLength - fileSections[fileId].length
                 if (remainingGap > 0) {
-                    gaps.add(gapIndex, Pair(gapStartIndex + fileSections[fileId].length, remainingGap))
+                    gaps.add(gapListIndex, Pair(gapStartIndex + fileSections[fileId].length, remainingGap))
                 }
                 break
             }
-            gapIndex++
+            gapListIndex++
         }
         fileId--
     }
