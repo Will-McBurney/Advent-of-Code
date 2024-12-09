@@ -32,6 +32,8 @@ fun main() {
     printer.printResults(part1Result, part2Result)
 }
 
+
+
 fun getPart1Result(disc: List<Int>): Long {
     val discArray = IntArray(disc.sum()){-1}
     var fileID = 0
@@ -63,28 +65,30 @@ fun getPart1Result(disc: List<Int>): Long {
         }
     }
 
-    return getCheckSum(discArray)
+    return discArray.map { if (it == -1) 0 else it }
+        .mapIndexed { ind, it -> (ind * it).toLong() }
+        .sum()
 }
 
-fun getPart2Result(disc: List<Int>): Long {
-    // map fileID -> (index, length)
-    val fileIndices = mutableListOf<Pair<Int, Int>>()
+data class FileSection(
+    val id: Int,
+    var firstIndex: Int,
+    val length: Int,
+)
 
-    // map gapLength -> List of indices in ascending order
+fun getPart2Result(disc: List<Int>): Long {
+    val fileSections = mutableListOf<FileSection>()
+
+    // map gapLength -> priorityQueue of indices for gaps of that size
     val gapIndexMap = mutableMapOf<Int, PriorityQueue<Int>>()
     (1 .. 9).forEach { gapIndexMap[it] = PriorityQueue() }
-
-    val discArray = IntArray(disc.sum()){-1}
 
     var fileId = 0
     var isFile = true
     var currentIndex = 0
     for (sectionLength in disc) {
         if (isFile) {
-            (currentIndex ..< currentIndex + sectionLength).forEach {
-                discArray[it] = fileId
-            }
-            fileIndices.add(Pair(currentIndex, sectionLength))
+            fileSections.add(FileSection(fileId, currentIndex, sectionLength))
             fileId++
         } else if (sectionLength != 0) {
             gapIndexMap[sectionLength]!!.add(currentIndex)
@@ -95,22 +99,22 @@ fun getPart2Result(disc: List<Int>): Long {
 
     while (fileId > 0) {
         fileId--
-        var fileIndex = fileIndices[fileId].first
-        var fileLength = fileIndices[fileId].second
-        val leftMostFit = gapIndexMap
+        val fileIndex = fileSections[fileId].firstIndex
+        val fileLength = fileSections[fileId].length
+
+        val bestGap = gapIndexMap
             .filter{ entry -> entry.key >= fileLength }
             .filter{ entry -> entry.value.isNotEmpty() }
             .map { entry -> entry.key to entry.value }
             .minByOrNull { entry -> entry.second.peek() }
 
-        if (leftMostFit == null) {continue}
-        val gapLength = leftMostFit.first
-        val gapIndex = leftMostFit.second.poll()
-        leftMostFit.second.remove(gapIndex)
+        if (bestGap == null) {continue}
+        val gapLength = bestGap.first
+        val gapIndex = bestGap.second.peek()
         if (gapIndex > fileIndex) {continue}
-        fileIndices[fileId] = Pair(gapIndex, fileLength)
+        bestGap.second.poll()
 
-        discArray.swap(fileIndex, gapIndex, fileLength)
+        fileSections[fileId].apply {  firstIndex = gapIndex }
 
         val remainingGap = gapLength - fileLength
         if (remainingGap > 0) {
@@ -119,20 +123,15 @@ fun getPart2Result(disc: List<Int>): Long {
         }
     }
 
-    return getCheckSum(discArray)
-}
+    fileSections.sortedBy { it.firstIndex }
+        .zipWithNext()
+        .filter { it.first.firstIndex + it.first.length > it.second.firstIndex}
+        .forEach { println(it) }
 
-fun getCheckSum(discArray: IntArray): Long {
-    return discArray.map { if (it == -1) 0 else it }
-        .mapIndexed { ind, it -> (ind * it).toLong() }
-        .sum()
-}
 
-fun IntArray.swap(fileIndex: Int, gapIndex: Int, fileLength: Int = 1) {
-    (gapIndex ..< gapIndex + fileLength).forEach {
-        this[it] = this[fileIndex]
-    }
-    (fileIndex..< fileIndex + fileLength).forEach {
-        this[it] = -1
+    return fileSections.sumOf { f ->
+        (0 ..< f.length).sumOf { index ->
+            (f.id * (f.firstIndex + index)).toLong()
+        }.toLong()
     }
 }
