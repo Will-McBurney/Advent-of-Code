@@ -3,6 +3,7 @@ package year24.day09
 import AoCResultPrinter
 import Reader
 import java.util.*
+import kotlin.concurrent.thread
 
 const val year: Int = 24
 const val day: Int = 9
@@ -16,16 +17,28 @@ fun main() {
     val inputFilename = "input.txt"
     val lines = Reader.getLines(year, day, inputFilename)
 
-    val disc = lines[0].trim().toCharArray().map { it.toString().toInt() }
+    val disc = lines[0].trim().toCharArray().map { it.toString().toInt() }.toIntArray()
 
     printer.endSetup()
 
+    var part1Result = -1L
+    var part2Result = -1L
+
     //Do Part 1
-    val part1Result = getPart1Result(disc)
-    printer.endPart1()
+    val part1Thread = thread {
+        part1Result = getPart1Result(disc)
+    }
+
 
     //Do Part 2
-    val part2Result = getPart2Result(disc)
+    val part2Thread = thread {
+        part2Result = getPart2Result(disc)
+    }
+
+    part1Thread.join()
+    printer.endPart1()
+
+    part2Thread.join()
     printer.endPart2()
 
     //Display output
@@ -34,7 +47,7 @@ fun main() {
 
 
 
-fun getPart1Result(disc: List<Int>): Long {
+fun getPart1Result(disc: IntArray): Long {
     val discArray = IntArray(disc.sum()){-1}
     var fileID = 0
     var isFile = true
@@ -72,20 +85,22 @@ fun getPart1Result(disc: List<Int>): Long {
 
 data class FileSection(
     val id: Int,
-    var firstIndex: Long,
+    var firstIndex: Int,
     val length: Int,
 )
 
-fun getPart2Result(disc: List<Int>): Long {
+fun getPart2Result(disc: IntArray): Long {
+    // list of file sections
     val fileSections = mutableListOf<FileSection>()
 
     // map gapLength -> priorityQueue of indices for gaps of that size
-    val gapIndexMap = mutableMapOf<Int, PriorityQueue<Long>>()
+    val gapIndexMap = mutableMapOf<Int, PriorityQueue<Int>>()
     (1 .. 9).forEach { gapIndexMap[it] = PriorityQueue() }
 
+    // loop forward getting File Sections and Gaps
     var fileId = 0
     var isFile = true
-    var currentIndex = 0L
+    var currentIndex = 0
     for (sectionLength in disc) {
         if (isFile) {
             fileSections.add(FileSection(fileId, currentIndex, sectionLength))
@@ -97,6 +112,7 @@ fun getPart2Result(disc: List<Int>): Long {
         isFile = !isFile
     }
 
+    // loop backwards through FileSections, moving them as left as possible without fragmenting
     while (fileId > 0) {
         fileId--
         val fileIndex = fileSections[fileId].firstIndex
@@ -114,7 +130,7 @@ fun getPart2Result(disc: List<Int>): Long {
         if (gapIndex > fileIndex) {continue}
         bestGap.second.poll()
 
-        fileSections[fileId].apply {  firstIndex = gapIndex }
+        fileSections[fileId].apply { firstIndex = gapIndex }
 
         val remainingGap = gapLength - fileLength
         if (remainingGap > 0) {
@@ -125,7 +141,7 @@ fun getPart2Result(disc: List<Int>): Long {
 
     return fileSections.sumOf { f ->
         (0 ..< f.length).sumOf { index ->
-            (f.id * (f.firstIndex + index))
+            (f.id.toLong() * (f.firstIndex + index))
         }
     }
 }
