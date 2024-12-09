@@ -70,7 +70,7 @@ fun getPart1Result(disc: List<Int>): Long {
 
 fun getPart2Result(disc: List<Int>): Long {
     // map fileID -> (index, length)
-    val fileIndexMap = mutableMapOf<Int, Pair<Int, Int>>()
+    val fileIndices = mutableListOf<Pair<Int, Int>>()
 
     // map gapLength -> List of indices in ascending order
     val gapIndexMap = mutableMapOf<Int, PriorityQueue<Int>>()
@@ -85,7 +85,7 @@ fun getPart2Result(disc: List<Int>): Long {
             (currentIndex ..< currentIndex + sectionLength).forEach {
                 discArray[it] = fileID
             }
-            fileIndexMap[fileID] = Pair(currentIndex, sectionLength)
+            fileIndices.add(Pair(currentIndex, sectionLength))
             fileID++
         } else if (sectionLength != 0) {
             gapIndexMap[sectionLength]!!.add(currentIndex)
@@ -96,22 +96,22 @@ fun getPart2Result(disc: List<Int>): Long {
 
     while (fileID > 0) {
         fileID--
-        var startingIndex = fileIndexMap[fileID]!!.first
-        var length = fileIndexMap[fileID]!!.second
+        var startingIndex = fileIndices[fileID].first
+        var length = fileIndices[fileID].second
         val leftMostFit = gapIndexMap
             .filter{ entry -> entry.key >= length }
             .filter{ entry -> entry.value.isNotEmpty() }
-            .map { entry -> entry.key to entry.value.poll() }
-            .minByOrNull { entry -> entry.second }
+            .map { entry -> entry.key to entry.value }
+            .minByOrNull { entry -> entry.second.peek() }
 
         if (leftMostFit == null) {continue}
-        val (gapLength, gapIndex) = leftMostFit
+        val gapLength = leftMostFit.first
+        val gapIndex = leftMostFit.second.poll()
         if (gapIndex > startingIndex) {continue}
-        fileIndexMap[fileID] = Pair(gapIndex, length)
+        fileIndices[fileID] = Pair(gapIndex, length)
         (gapIndex ..< gapIndex + length).forEach {
             discArray[it] = fileID
         }
-        gapIndexMap[gapLength]!!.remove(gapIndex)
 
         val remainingGap = gapLength - length
         if (remainingGap > 0) {
