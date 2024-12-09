@@ -24,21 +24,20 @@ fun main() {
     var part1Result = -1L
     var part2Result = -1L
 
-    //Do Part 1
+    //Do Part 1 Thread
     val part1Thread = thread {
         part1Result = getPart1Result(disc)
         printer.endPart1()
     }
 
-
-    //Do Part 2
+    //Do Part 2 Thread
     val part2Thread = thread {
         part2Result = getPart2Result(disc)
         printer.endPart2()
     }
 
+    //Wait for both to finish
     part1Thread.join()
-
     part2Thread.join()
 
     //Display output
@@ -137,6 +136,59 @@ fun getPart2Result(disc: IntArray): Long {
             val newGapIndex = gapIndex + fileLength
             gapIndexMap[remainingGap]!!.add(newGapIndex)
         }
+    }
+
+    return fileSections.sumOf { f ->
+        (0 ..< f.length).sumOf { index ->
+            (f.id.toLong() * (f.firstIndex + index))
+        }
+    }
+}
+
+fun part2Bad(disc: IntArray): Long {
+    // list of file sections
+    val fileSections = mutableListOf<FileSection>()
+
+    // Pair (gapIndex, gapLength)
+    val gaps = mutableListOf<Pair<Int, Int>>()
+
+    // loop forward getting File Sections and Gaps
+    var fileId = 0
+    var isFile = true
+    var currentIndex = 0
+    for (sectionLength in disc) {
+        if (isFile) {
+            fileSections.add(FileSection(fileId, currentIndex, sectionLength))
+            fileId++
+        } else if (sectionLength != 0) {
+            gaps.add(Pair(currentIndex, sectionLength))
+        }
+        currentIndex += sectionLength
+        isFile = !isFile
+    }
+    fileId--
+
+    while (fileId > 0) {
+        var gapIndex = 0;
+        for (gap in gaps) {
+            val gapStartIndex = gap.first
+
+            if (gapStartIndex > fileSections[fileId].firstIndex) { break }
+
+            val gapLength = gap.second
+            if (gapLength >= fileSections[fileId].length) {
+                fileSections[fileId].apply { firstIndex = gapStartIndex }
+                gaps.removeAt(gapIndex)
+                // and new gap if needed
+                val remainingGap = gapLength - fileSections[fileId].length
+                if (remainingGap > 0) {
+                    gaps.add(gapIndex, Pair(gapStartIndex + fileSections[fileId].length, remainingGap))
+                }
+                break
+            }
+            gapIndex++
+        }
+        fileId--
     }
 
     return fileSections.sumOf { f ->
