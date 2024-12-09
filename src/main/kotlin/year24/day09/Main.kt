@@ -27,19 +27,19 @@ fun main() {
     //Do Part 1
     val part1Thread = thread {
         part1Result = getPart1Result(disc)
+        printer.endPart1()
     }
 
 
     //Do Part 2
     val part2Thread = thread {
         part2Result = getPart2Result(disc)
+        printer.endPart2()
     }
 
     part1Thread.join()
-    printer.endPart1()
 
     part2Thread.join()
-    printer.endPart2()
 
     //Display output
     printer.printResults(part1Result, part2Result)
