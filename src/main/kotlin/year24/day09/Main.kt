@@ -73,8 +73,8 @@ fun getPart2Result(disc: List<Int>): Long {
     val fileIndices = mutableListOf<Pair<Int, Int>>()
 
     // map gapLength -> List of indices in ascending order
-    val gapIndexMap = mutableMapOf<Int, PriorityQueue<Int>>()
-    (1 .. 9).forEach { gapIndexMap[it] = PriorityQueue() }
+    val gapIndexMap = mutableMapOf<Int, SortedSet<Int>>()
+    (1 .. 9).forEach { gapIndexMap[it] = sortedSetOf() }
 
     val discArray = Array<Int>(disc.sum()){-1}
     var fileID = 0
@@ -102,11 +102,12 @@ fun getPart2Result(disc: List<Int>): Long {
             .filter{ entry -> entry.key >= length }
             .filter{ entry -> entry.value.isNotEmpty() }
             .map { entry -> entry.key to entry.value }
-            .minByOrNull { entry -> entry.second.peek() }
+            .minByOrNull { entry -> entry.second.first() }
 
         if (leftMostFit == null) {continue}
         val gapLength = leftMostFit.first
-        val gapIndex = leftMostFit.second.poll()
+        val gapIndex = leftMostFit.second.first()
+        leftMostFit.second.remove(gapIndex)
         if (gapIndex > startingIndex) {continue}
         fileIndices[fileID] = Pair(gapIndex, length)
         (gapIndex ..< gapIndex + length).forEach {
@@ -137,7 +138,7 @@ fun getPart2Result(disc: List<Int>): Long {
         for (i in leftGapStart until leftGapStart + fullGapLength) {
             discArray[i] = -1
         }
-        gapIndexMap.putIfAbsent(fullGapLength, PriorityQueue())
+        gapIndexMap.putIfAbsent(fullGapLength, sortedSetOf())
         gapIndexMap[fullGapLength]!!.add(leftGapStart)
     }
 
