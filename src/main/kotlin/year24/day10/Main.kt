@@ -4,7 +4,9 @@ import AoCResultPrinter
 import Grid
 import GridCoordinate
 import Reader
-import java.util.*
+import year24.SearchNode
+import year24.SearchResult
+import year24.dfs
 
 const val year: Int = 24
 const val day: Int = 10
@@ -28,56 +30,66 @@ fun main() {
     printer.endSetup()
 
     //Do Part 1
-    val part1Result = getPart1Result(grid, trailHeads)
+    val trailResultsList = getTrailResults(grid, trailHeads)
+
+    val part1Result = trailResultsList.sumOf{ it.getPart1Result() }
     printer.endPart1()
 
     //Do Part 2
-    val part2Result = getPart2Result(grid, trailHeads)
+    val part2Result = trailResultsList.sumOf{ it.getPart2Result() }
     printer.endPart2()
 
     //Display output
     printer.printResults(part1Result, part2Result)
 }
 
-fun getPart1Result(
-    grid: Grid<Int>,
-    trailHeads: List<GridCoordinate>
-): Int {
-    return trailHeads.sumOf { trailhead ->
-        val stack = Stack<GridCoordinate>()
-        val destinationsSet = mutableSetOf<GridCoordinate>()
-
-        stack.push(trailhead)
-        while (stack.isNotEmpty()) {
-            val node = stack.pop()
-            if (grid.get(node) == 9) {
-                destinationsSet.add(node)
-                continue
-            }
-            grid.getCardinalNeighbors(node)
-                .filter { neighbor -> grid.get(neighbor) == grid.get(node) + 1 }
-                .forEach { neighbor -> stack.push(neighbor) }
-        }
-        destinationsSet.size
+data class AscendingGridNode(
+    val gridCoordinate: GridCoordinate,
+    val grid: Grid<Int>,
+): SearchNode<GridCoordinate> {
+    override fun getNode(): GridCoordinate {
+        return gridCoordinate
     }
+
+    override fun getNext(): List<AscendingGridNode> {
+        val coordinateValue = grid.get(gridCoordinate)
+        return grid.getCardinalNeighbors(gridCoordinate)
+            .filter { grid.get(it) == coordinateValue + 1 }
+            .map { AscendingGridNode(it, grid) }
+    }
+
 }
 
-fun getPart2Result(grid: Grid<Int>, trailHeads: List<GridCoordinate>): Int {
-    return trailHeads.sumOf { trailhead ->
-        val stack = Stack<GridCoordinate>()
-        var destinationsReached = 0
+const val TARGET_HEIGHT = 9
 
-        stack.push(trailhead)
-        while (stack.isNotEmpty()) {
-            val node = stack.pop()
-            if (grid.get(node) == 9) {
-                destinationsReached++
-                continue
-            }
-            grid.getCardinalNeighbors(node)
-                .filter { neighbor -> grid.get(neighbor) == grid.get(node) + 1 }
-                .forEach { neighbor -> stack.push(neighbor) }
+class TrailResults(
+    private val grid: Grid<Int>,
+    private val destinationsReached: MutableSet<GridCoordinate> = mutableSetOf(),
+    private var destinationCount: Int = 0
+): SearchResult<Int> {
+    override fun updateResult(node: SearchNode<*>) {
+        require(node is AscendingGridNode)
+        if (TARGET_HEIGHT == grid.get(node.gridCoordinate)) {
+            destinationCount++
+            destinationsReached.add(node.gridCoordinate)
         }
-        destinationsReached
+    }
+
+    fun getPart1Result() = destinationsReached.size
+
+    fun getPart2Result() = destinationCount
+}
+
+
+fun getTrailResults(
+    grid: Grid<Int>,
+    trailHeads: List<GridCoordinate>
+): List<TrailResults> {
+    return trailHeads.map { trailhead ->
+        dfs(
+            start = setOf(AscendingGridNode(trailhead, grid)),
+            initialResult = TrailResults(grid),
+            visitOnlyOnce = false
+        ) as TrailResults
     }
 }
