@@ -29,6 +29,7 @@ fun main() {
 
     //Display output
     printer.printResults(part1Result, part2Result)
+
 }
 
 fun processStone(stone: Long): List<Long> {
@@ -57,6 +58,7 @@ fun getStoneCountHelper(stone: Long, blinksRemaining: Int): Long {
     if (cache.containsKey(stone to blinksRemaining)) {
         return cache[stone to blinksRemaining]!!
     }
+
     val results = processStone(stone).sumOf { getStoneCountHelper(it, blinksRemaining - 1) }
     cache[stone to blinksRemaining] = results
     return results
