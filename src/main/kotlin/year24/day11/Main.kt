@@ -55,6 +55,7 @@ fun getStoneCountHelper(stone: Long, blinksRemaining: Int): Long {
     if (blinksRemaining == 0) {
         return 1L
     }
+
     if (cache.containsKey(stone to blinksRemaining)) {
         return cache[stone to blinksRemaining]!!
     }
