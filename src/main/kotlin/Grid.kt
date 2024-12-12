@@ -30,9 +30,13 @@ class Grid<E>(
         return coordinate.row in 0..<numRows && coordinate.col in 0..<numCols
     }
 
-    fun getCardinalNeighbors(coordinate: GridCoordinate): List<GridCoordinate> {
-        return coordinate.getCardinalNeighbors()
+    fun getCardinalNeighbors(
+        coordinate: GridCoordinate,
+        filterOutOfBounds: Boolean = true
+    ): List<GridCoordinate> {
+        return if (filterOutOfBounds) coordinate.getCardinalNeighbors()
             .filter { c -> isInBounds(c) }
+        else coordinate.getCardinalNeighbors()
     }
 
     fun getOrdinalNeighbors(coordinate: GridCoordinate): List<GridCoordinate> {
