@@ -14,7 +14,25 @@ data class ClawMachine(
     val bY: Long,
     val targetX: Long,
     val targetY: Long
-)
+) {
+    fun solve(): Pair<Long, Long>? {
+        val inverseDeterminant = aX*bY - aY*bX
+        if (inverseDeterminant == 0L) {
+            return null
+        }
+
+        val cInv = listOf(listOf(bY, -bX), listOf(-aY, aX))
+
+        val aPresses = (cInv[0][0] * targetX + cInv[0][1] * targetY)/inverseDeterminant
+        val bPresses = (cInv[1][0] * targetX + cInv[1][1] * targetY)/inverseDeterminant
+
+        if (aPresses * aX + bPresses * bX == targetX && aPresses * aY + bPresses * bY == targetY) {
+            return aPresses to bPresses
+        }
+        return null
+    }
+
+}
 
 const val A_TOKEN_COST = 3
 const val B_TOKEN_COST = 1
@@ -23,7 +41,7 @@ fun main() {
     val printer = AoCResultPrinter(year, day)
 
     //Setup
-    val inputFilename = "test_input.txt"
+    val inputFilename = "input.txt"
     val lines = Reader.getLines(year, day, inputFilename)
     val machines = lines.windowed(3, step = 4).map { machineText ->
         ClawMachine(
@@ -36,6 +54,7 @@ fun main() {
         )
     }
 
+    println(machines[0].solve())
 
     printer.endSetup()
 
@@ -52,27 +71,14 @@ fun main() {
 }
 
 fun getPart1Result(machines: List<ClawMachine>): Long {
-    return machines.sumOf { machine ->
-        var bestTokenCost: Long? = null
-        val aMax = listOf(machine.targetX / machine.aX, machine.targetY / machine.aY).min()
-        for (aPresses in 0..aMax) {
-            val diffX = machine.targetX - aPresses * machine.aX
-            if (diffX % machine.bX != 0L) continue
-            val bPresses = diffX / machine.bX
-            if (machine.targetY != aPresses * machine.aY + bPresses * machine.bY) continue
-            val tokenCost = aPresses * A_TOKEN_COST + bPresses * B_TOKEN_COST
-            if (tokenCost < (bestTokenCost ?: Long.MAX_VALUE)) {
-                bestTokenCost = tokenCost
-            }
-        }
-        bestTokenCost ?: 0
-    }
+    return machines.map { machine ->
+        machine.solve() ?: 0L to 0L
+    }.sumOf { pair -> pair.first * A_TOKEN_COST + pair.second * B_TOKEN_COST }
 }
 
 const val PART_2_TARGET_CHANGE = 10000000000000L
 
 fun getPart2Result(machines: List<ClawMachine>): Long {
-    return 0
     val bigMachines = machines.map { machine ->
         machine.copy(
             targetX = machine.targetX + PART_2_TARGET_CHANGE,
