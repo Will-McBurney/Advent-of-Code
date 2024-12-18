@@ -11,9 +11,6 @@ import kotlin.math.sign
 const val year: Int = 24
 const val day: Int = 16
 
-
-
-const val EMPTY = '.'
 const val WALL = '#'
 
 lateinit var grid: Grid<Char>
@@ -37,7 +34,7 @@ fun main() {
     printer.endPart1()
 
     //Do Part 2
-    val part2Result = getPart2Result(start, end, startingDirection)
+    val part2Result = getPart2Result()
     printer.endPart2()
 
     //Display output
@@ -66,12 +63,9 @@ fun getPart1Result(start: GridCoordinate, end: GridCoordinate, startingDirection
     var bestWeight = Long.MAX_VALUE
 
 
-    while (queue.isNotEmpty()) {
+    while (queue.isNotEmpty() && queue.peek().weight < bestWeight) {
         val nextNode = queue.poll()
-        if (weights[nextNode.coordinate to nextNode.direction]!! > bestWeight) {
-            break;
-        }
-        // if no longer a best weight, then stop this path
+        // if no longer the best weight, then stop this path
         if (nextNode.weight > weights[nextNode.coordinate to nextNode.direction]!!) {
             continue
         }
@@ -103,9 +97,9 @@ fun getPart1Result(start: GridCoordinate, end: GridCoordinate, startingDirection
     }
 
     part2Answer = bestPathCoordinates.size
-    return bestWeight;
+    return bestWeight
 }
 
-fun getPart2Result(start: GridCoordinate, end: GridCoordinate, startingDirection: CardinalDirection): Int {
+fun getPart2Result(): Int {
     return part2Answer
 }
