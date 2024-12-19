@@ -8,7 +8,6 @@ const val day: Int = 19
 
 lateinit var towels: List<String>
 
-var cache = mutableMapOf<Int, Long>()
 
 
 fun main() {
@@ -23,16 +22,7 @@ fun main() {
 
     printer.endSetup()
 
-    val results = patterns.map {
-        cache = mutableMapOf<Int, Long>()
-        val result = search(it, 0)
-        result
-    }
-
-    val part1 = patterns.count {
-        secondaryCache = mutableMapOf<Int, Boolean>()
-        searchPart1(it, 0)
-    }
+    val results = getCombinationList(patterns)
 
     //Do Part 1
     val part1Result = getPart1Result(results)
@@ -46,20 +36,14 @@ fun main() {
     printer.printResults(part1Result, part2Result)
 }
 
-var secondaryCache = mutableMapOf<Int, Boolean>()
+var cache = mutableMapOf<Int, Long>()
 
-fun searchPart1(target: String, startingIndex: Int): Boolean {
-    if (startingIndex == target.length) return true
-    if (secondaryCache.containsKey(startingIndex)) return false
-    towels.forEach { towel ->
-        if (target.substring(startingIndex).startsWith(towel) && searchPart1(target, startingIndex + towel.length)) {
-            return true
-        }
+fun getCombinationList(patterns: List<String>): List<Long> =
+    patterns.map {
+        cache = mutableMapOf<Int, Long>()
+        val result = search(it, 0)
+        result
     }
-    secondaryCache[startingIndex] = false
-    return false
-}
-
 
 fun search(target: String, startingIndex: Int): Long {
     if (startingIndex == target.length) return 1
