@@ -4,9 +4,9 @@ import AoCResultPrinter
 import Grid
 import GridCoordinate
 import Reader
-import year24.SearchNode
-import year24.SearchResult
-import year24.dfs
+import SearchNode
+import SearchResult
+import dfs
 
 const val year: Int = 24
 const val day: Int = 10

@@ -1,5 +1,3 @@
-package year24
-
 import java.util.Stack
 
 interface SearchNode<E> {
