@@ -30,10 +30,8 @@ fun main() {
     val part1Result = getPart1Result(registerA, registerB, registerC, program)
     printer.endPart1()
 
-    println(part1Result)
-
     //Do Part 2
-    val part2Result = 0 //getPart2Result(registerB, registerC, program)
+    val part2Result = getPart2Result(program, program.lastIndex, 0)
     printer.endPart2()
 
     //Display output
@@ -102,18 +100,28 @@ fun getOpCode(instruction: Int): OpCode{
     }
 }
 
+val cache = mutableMapOf<Pair<Int,Long>, Long>()
 
-
-fun getPart2Result(registerB: Long, registerC: Long, program: List<Int>): Int {
+fun getPart2Result(program: List<Int>, outputIndex: Int, aRegStart: Long): Long {
     return 0
-
-    (0 ..< Int.MAX_VALUE).forEach { i ->
-        if (i % 1000000 == 0) {
-            println("%12d".format(i))
+    if (cache.contains(outputIndex to aRegStart)) {
+        return Long.MAX_VALUE
+    }
+    if (outputIndex == -1) {
+        return aRegStart/8
+    }
+    (aRegStart ..< aRegStart + 8).forEach { aReg ->
+        val out = (0 ..< 64).minOf { i ->
+            val result = getPart1Result(aReg.toLong(), (i % 8).toLong(), (i / 8).toLong(), program)
+            if ( result.first() == program[outputIndex] )  {
+                getPart2Result(program, outputIndex - 1, aReg * 8L)
+            } else Long.MAX_VALUE
         }
-        if (getPart1Result(i.toLong(), registerB, registerC, program) == program) {
-            return i
+        if (out < Long.MAX_VALUE) {
+            cache[outputIndex to aRegStart] = out
+            return out
         }
     }
-    return 0
+    cache[outputIndex to aRegStart] = Long.MAX_VALUE
+    return Long.MAX_VALUE
 }
