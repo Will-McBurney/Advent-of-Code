@@ -74,9 +74,9 @@ fun getHumanDirectionsLength(directions: String, numRobots: Int): Long {
     if (numRobots == 0) return directions.length.toLong() - 1L
     if (cache.containsKey(directions to numRobots)) return cache[directions to numRobots]!!
 
-    val totalInstructionLength = directions.windowed(2, 1)
+    val nextDirections = directions.windowed(2, 1)
         .map { "A" + getArrowPadDirections(directionPadMap[it[0]]!!, directionPadMap[it[1]]!!) }
-        .sumOf { getHumanDirectionsLength(it, numRobots - 1) }
+    val totalInstructionLength = nextDirections.sumOf { getHumanDirectionsLength(it, numRobots - 1) }
 
     cache[directions to numRobots] = totalInstructionLength
     return totalInstructionLength
