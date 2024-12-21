@@ -22,7 +22,7 @@ fun main() {
     val lines = Reader.getLines(year, day, inputFilename)
 
 
-    val gridList = mutableListOf<MutableList<Char>>();
+    val gridList = mutableListOf<MutableList<Char>>()
     repeat(GRID_SIZE) {
         gridList.add(Array<Char>(GRID_SIZE){'.'}.toMutableList())
     }
@@ -35,11 +35,12 @@ fun main() {
     printer.endSetup()
 
     //Do Part 1
-    val part1Result = getPart1Result(GridCoordinate(0,0), GridCoordinate(GRID_SIZE - 1, GRID_SIZE - 1), coordinates, numBytes)
+    val bestPath = getPart1Result(GridCoordinate(0,0), GridCoordinate(GRID_SIZE - 1, GRID_SIZE - 1), coordinates, numBytes)
+    val part1Result = bestPath!!.size
     printer.endPart1()
 
     //Do Part 2
-    val part2Result = getPart2Result(GridCoordinate(0,0), GridCoordinate(GRID_SIZE - 1, GRID_SIZE - 1), coordinates, numBytes)
+    val part2Result = getPart2Result(GridCoordinate(0,0), GridCoordinate(GRID_SIZE - 1, GRID_SIZE - 1), coordinates, numBytes, bestPath)
     printer.endPart2()
 
     //Display output
@@ -56,7 +57,7 @@ fun getPart1Result(
     goal: GridCoordinate,
     coordinates: List<GridCoordinate>,
     numBytes: Int
-): Int {
+): List<GridCoordinate>? {
     (0..<numBytes).forEach { index -> grid.set(coordinates[index], '#') }
 
     val queue = PriorityQueue<Node>(compareBy<Node> { it.path.size })
@@ -83,16 +84,20 @@ fun getPart1Result(
             }
         }
     }
-    return bestPath?.size ?: -1
+    return bestPath
 }
 
 fun getPart2Result(start: GridCoordinate,
                    goal: GridCoordinate,
                    coordinates: List<GridCoordinate>,
-                   numBytes: Int): Pair<Int, Int> {
+                   numBytes: Int,
+                   part1Path: List<GridCoordinate>): Pair<Int, Int> {
+    var currentPath: List<GridCoordinate>? = part1Path
     val firstBadIndex = (numBytes ..< coordinates.size).first { n ->
-        val result = getPart1Result(start, goal, coordinates, n)
-        result < 0
+        if (!currentPath!!.contains(coordinates[n]))
+            return@first false
+        currentPath = getPart1Result(start, goal, coordinates, n)
+        currentPath == null
     }
     return coordinates[firstBadIndex].col to coordinates[firstBadIndex].row
 }
