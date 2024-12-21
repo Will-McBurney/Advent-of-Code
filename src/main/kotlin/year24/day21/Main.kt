@@ -51,17 +51,6 @@ fun main() {
     printer.printResults(part1Result, part2Result)
 }
 
-fun printNextSteps(directions: String) {
-    var result = directions
-    repeat(3) { i ->
-        result = "A" + result.windowed(2, 1).map { getArrowPadDirections(directionPadMap[it[0]]!!, directionPadMap[it[1]]!!) }
-                .joinToString("")
-        //println("${i+1}: ${result.length}\t$result")
-    }
-}
-
-var cache = mutableMapOf<Pair<String, Int>, Long>()
-
 fun getComplexitySum(lines: List<String>, numRobots: Int): Long {
     return lines.sumOf { line -> getComplexity(line, numRobots) }
 }
@@ -69,9 +58,9 @@ fun getComplexitySum(lines: List<String>, numRobots: Int): Long {
 fun getComplexity(line:String, numRobots: Int): Long {
     val digits = ("A$line").toCharArray().toList()
     val numPadDirections = getNumberPadDirections(digits)
-    val totalLengthOfHumanEntry = getDirectionsLength(numPadDirections, numRobots)
+    val lengthOfHumanDirections = getHumanDirectionsLength(numPadDirections, numRobots)
     val lineNumber = line.slice(0 .. 2).toInt() // 029A -> 29
-    return totalLengthOfHumanEntry.toLong() * lineNumber
+    return lengthOfHumanDirections.toLong() * lineNumber
 }
 
 fun getNumberPadDirections(digits: List<Char>) =
@@ -79,13 +68,15 @@ fun getNumberPadDirections(digits: List<Char>) =
         .map { getNumberPadDirections(numPadMap[it[0]]!!, numPadMap[it[1]]!!) }
         .joinToString("")
 
-fun getDirectionsLength(directions: String, numRobots: Int): Long {
+var cache = mutableMapOf<Pair<String, Int>, Long>()
+
+fun getHumanDirectionsLength(directions: String, numRobots: Int): Long {
     if (numRobots == 0) return directions.length.toLong() - 1L
     if (cache.containsKey(directions to numRobots)) return cache[directions to numRobots]!!
 
     val totalInstructionLength = directions.windowed(2, 1)
         .map { "A" + getArrowPadDirections(directionPadMap[it[0]]!!, directionPadMap[it[1]]!!) }
-        .sumOf { getDirectionsLength(it, numRobots - 1) }
+        .sumOf { getHumanDirectionsLength(it, numRobots - 1) }
 
     cache[directions to numRobots] = totalInstructionLength
     return totalInstructionLength
