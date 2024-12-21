@@ -88,7 +88,7 @@ fun getUpDown(from: Pair<Int, Int>, to: Pair<Int, Int>):String =
 
 fun getLeftRight(from: Pair<Int, Int>, to: Pair<Int, Int>):String =
     if (from.second > to.second) "<".repeat(from.second - to.second)
-    else ">".repeat(to.second - from.second)
+        else ">".repeat(to.second - from.second)
 
 
 fun getNumberPadDirections(from: Pair<Int, Int>, to: Pair<Int, Int>): String{
