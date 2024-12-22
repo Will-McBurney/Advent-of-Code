@@ -25,8 +25,6 @@ fun main() {
 
     val trailHeads = grid.coordinates.filter { coordinate -> grid.get(coordinate) == 0 }
 
-    println(grid)
-
     printer.endSetup()
 
     //Do Part 1
