@@ -6,12 +6,6 @@ import Reader
 const val year: Int = 24
 const val day: Int = 22
 
-
-const val step1Multiplier = 64L // shift left 6
-const val step2Divisor = 32L // shift right 5
-const val step3Multiplier = 2024L
-const val pruneModuloMinusOne = 16777215L // mod 2^24
-
 fun main() {
     val printer = AoCResultPrinter(year, day)
     
@@ -40,7 +34,7 @@ fun getPart1Result(initSecretNumbers: List<Long>, repetitions: Int): Long {
     var secretNumbers = initSecretNumbers.toMutableList()
     secretNumbers.parallelStream().mapToLong { sn ->
         var currentNumber = sn
-        repeat(2000) {
+        repeat(repetitions) {
             currentNumber = getNextNumber(currentNumber)
         }
         currentNumber
@@ -50,7 +44,7 @@ fun getPart1Result(initSecretNumbers: List<Long>, repetitions: Int): Long {
 
 fun getPart2Result(initSecretNumbers: List<Long>, repetitions: Int): Int {
     val sequenceMaps = initSecretNumbers.parallelStream().map {
-        getSequenceMap(it)
+        getSequenceMap(it, repetitions)
     }.toList()
     val sequenceSums = sequenceMaps.fold(mutableMapOf<Int, Int>()) { acc, item ->
         item.entries.forEach { (key, value) ->
@@ -63,8 +57,8 @@ fun getPart2Result(initSecretNumbers: List<Long>, repetitions: Int): Int {
     return bestSequence.value
 }
 
-fun getSequenceMap(startingNumber: Long):Map<Int, Int> {
-    val numberList = getNumberList(startingNumber)
+fun getSequenceMap(startingNumber: Long, repetitions: Int):Map<Int, Int> {
+    val numberList = getNumberList(startingNumber, repetitions)
     val sequenceMap = mutableMapOf<Int, Int>()
     numberList.windowed(5)
         .map {
