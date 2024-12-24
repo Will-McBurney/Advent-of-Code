@@ -38,15 +38,6 @@ fun main() {
     
     println()
     
-    val gatesOfInterest = logicGates.map { it.output }
-        .filterNot { it.startsWith('z') }
-        .filter { output -> logicGates.none { it.operand1 == output } }
-        .filter { output -> logicGates.none { it.operand2 == output } }
-    
-    println(gatesOfInterest)
-    
-    println()
-    
     var lastGates = emptyList<String>()
     (0..45).forEach { gateNumber ->
         val currentGate = getDependentWires(logicGates, getGameName(gateNumber))
@@ -153,6 +144,6 @@ fun getNumberFromStartingLetter(map: Map<String, Boolean>, startingCharacter: Ch
     return sum
 }
 
-fun getPart2Result(): Int {
-    return 0
+fun getPart2Result(): String {
+    return "dkr,ggk,hhh,htp,rhv,z05,z15,z20"
 }
