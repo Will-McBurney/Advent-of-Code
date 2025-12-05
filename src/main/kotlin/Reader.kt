@@ -6,7 +6,7 @@ class Reader {
             println("Opening file: $resourceFilename")
 
             if (!linesMemo.containsKey(resourceFilename)) {
-                linesMemo[resourceFilename] = Reader.javaClass
+                linesMemo[resourceFilename] = Reader::class.java
                     .getResourceAsStream(resourceFilename)!!
                     .bufferedReader()
                     .readLines()
