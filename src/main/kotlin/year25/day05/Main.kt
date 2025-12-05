@@ -2,13 +2,10 @@ package year25.day05
 
 import AoCResultPrinter
 import Reader
-import kotlinx.coroutines.flow.combine
 import kotlin.math.max
-import kotlin.math.min
 
 const val year: Int = 25
 const val day: Int = 5
-
 
 fun main() {
     val printer = AoCResultPrinter(year, day)
@@ -44,13 +41,17 @@ fun main() {
     printer.printResults(part1Result, part2Result)
 }
 
+/**
+ * Reduces a list of LongRanges by combining overlapping ranges.
+ * @return ascending sorted list of non-overlapping [LongRange]s
+ */
 fun reduceRanges(ranges: List<LongRange>): List<LongRange> {
     val ranges = ranges.sortedBy { it.first }
     val reducedRanges = mutableListOf<LongRange>()
     var currentRange = ranges.first()
     for (i in 1..ranges.lastIndex) {
         if (currentRange.last >= ranges[i].first) {
-            currentRange = currentRange.combine(ranges[i])
+            currentRange = currentRange.first .. max(currentRange.last, ranges[i].last)
         } else {
             reducedRanges.add(currentRange)
             currentRange = ranges[i]
@@ -60,6 +61,10 @@ fun reduceRanges(ranges: List<LongRange>): List<LongRange> {
     return reducedRanges
 }
 
+/**
+ * Returns the number of ingredients in any range.
+ * Weirdly, using binary search seemed slower than linear search here.
+ */
 fun getPart1Result(ingredients: List<Long>, ranges: List<LongRange>) =
     ingredients.count { ingredient ->
         ranges.any { range -> ingredient in range }
@@ -68,8 +73,3 @@ fun getPart1Result(ingredients: List<Long>, ranges: List<LongRange>) =
 
 fun getPart2Result(ranges: List<LongRange>) =
     ranges.sumOf { range -> range.last - range.first + 1 }
-
-fun LongRange.combine(other: LongRange): LongRange = LongRange(
-    min(this.first, other.first),
-    max(this.last, other.last)
-)
