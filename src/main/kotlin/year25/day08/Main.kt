@@ -12,13 +12,10 @@ data class JunctionBox(
     val y: Long,
     val z: Long
 ) {
-    fun distanceTo(other: JunctionBox): Double {
-        return sqrt(
-            (deltaSquared(this.x, other.x) +
-                    deltaSquared(this.y, other.y) +
-                    deltaSquared(this.z, other.z)).toDouble()
-        )
-    }
+    fun distanceSquared(other: JunctionBox): Long =
+        deltaSquared(this.x, other.x) +
+            deltaSquared(this.y, other.y) +
+            deltaSquared(this.z, other.z)
 
     private fun deltaSquared(a: Long, b: Long): Long = (b - a) * (b - a)
 }
@@ -33,10 +30,10 @@ fun main() {
     val junctionBoxes = lines.map { it.trim().split(",")}
         .map { JunctionBox(it[0].toLong(), it[1].toLong(), it[2].toLong()) }
 
-    val adjacency = mutableMapOf<Pair<Int, Int>, Double>()
+    val adjacency = mutableMapOf<Pair<Int, Int>, Long>()
     for (i in junctionBoxes.indices) {
         for (j in i + 1 ..< junctionBoxes.size) {
-            val distance = junctionBoxes[i].distanceTo(junctionBoxes[j])
+            val distance = junctionBoxes[i].distanceSquared(junctionBoxes[j])
             adjacency[Pair(i, j)] = distance
         }
     }
