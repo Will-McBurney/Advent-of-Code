@@ -73,24 +73,25 @@ enum class CrossingStatus{
     DOWN_CORNER,
 }
 
-fun getFilledTiles(boundaryTiles: Set<Pair<Long, Long>>): Set<Pair<Long, Long>> {
-    val maxRow = boundaryTiles.maxOf { it.first }
-    val minRow = boundaryTiles.minOf { it.first }
-    val maxColumn = boundaryTiles.maxOf { it.second }
-    val minColumn = boundaryTiles.minOf { it.second }
+fun getFilledTileRanges(cornerTiles: List<Pair<Long, Long>>): Map<Long, List<LongRange>> {
+    val maxColumn = cornerTiles.maxOf { it.second }
+    val minColumn = cornerTiles.minOf { it.second }
 
-    val filledTiles = boundaryTiles.toHashSet()
+    val rowsOfInterest = getRowsOfInterest(cornerTiles)
+    val boundaryTiles = getBoundaryTiles(cornerTiles)
 
-    for (rowIndex in minRow..maxRow) {
+    val fillTileRanges = mutableMapOf<Long, List<LongRange>>()
+
+    for (rowIndex in rowsOfInterest) {
         var crossings = 0
         var crossingStatus = CrossingStatus.NON_EDGE
-        if (rowIndex % 100L == 0L) {
-            println(rowIndex)
-        }
+
+        val rowFilledTiles = mutableListOf<Long>()
 
         for (columnIndex in minColumn..maxColumn) {
             val coordinate = Pair(rowIndex, columnIndex)
             if (coordinate in boundaryTiles) {
+                rowFilledTiles.add(columnIndex)
                 val up = Pair(rowIndex-1, columnIndex) in boundaryTiles
                 val down = Pair(rowIndex+1, columnIndex) in boundaryTiles
                 if (up && down) { // crossing vertical edge not on a corner
@@ -116,45 +117,75 @@ fun getFilledTiles(boundaryTiles: Set<Pair<Long, Long>>): Set<Pair<Long, Long>> 
                     }
                 }
             } else if (crossings % 2 == 1) {
-                filledTiles.add(coordinate)
+                rowFilledTiles.add(columnIndex)
             }
         }
+        if (rowFilledTiles.isEmpty()) {
+            fillTileRanges[rowIndex] = mutableListOf()
+            continue
+        }
+
+        val ranges = mutableListOf<LongRange>()
+        var rangeStart = rowFilledTiles.first()
+        var last = rangeStart
+        for (i in 1..rowFilledTiles.lastIndex) {
+            if (rowFilledTiles[i] != last + 1) {
+                ranges.add(rangeStart..last)
+                rangeStart = rowFilledTiles[i]
+            }
+            if (i == rowFilledTiles.lastIndex) {
+                ranges.add(rangeStart .. rowFilledTiles[i])
+            }
+            last = rowFilledTiles[i]
+        }
+        //println("$rowIndex -> $ranges")
+        fillTileRanges[rowIndex] = ranges
     }
-    return filledTiles
+    return fillTileRanges
 }
 
-fun isInteriorRectangle(c1: Pair<Long, Long>, c2: Pair<Long, Long>, filledTiles: Set<Pair<Long, Long>>): Boolean {
-    println("$c1 -> $c2")
-    for (row in min(c1.first, c2.first)..max(c1.first, c2.first)) {
-        if ((Pair(row, c1.second) !in filledTiles) || (Pair(row, c2.second) !in filledTiles)) {
-            return false
-        }
+var rowsOfInterest: List<Long>? = null
+private fun getRowsOfInterest(cornerTiles: List<Pair<Long, Long>>): List<Long> {
+    if (rowsOfInterest == null) {
+        rowsOfInterest = cornerTiles.map { it.first }
+            .distinct()
+            .sorted()
     }
-    for (column in min(c1.second, c2.second) .. max(c1.second, c2.second)) {
-        if ((Pair(c1.first, column) !in filledTiles) || (Pair(c2.first, column) !in filledTiles)) {
-            return false
+    return rowsOfInterest!!
+}
+
+fun isInteriorRectangle(
+    c1: Pair<Long, Long>,
+    c2: Pair<Long, Long>,
+    filledTileRanges: Map<Long, List<LongRange>>
+): Boolean {
+    val rowRange = min(c1.first, c2.first)..max(c1.first, c2.first)
+    return filledTileRanges.keys.filter { k -> k in rowRange }
+        .all { k ->
+            val filledRanges = filledTileRanges[k]!!
+            val c1Index = filledRanges.indexOfFirst { range ->  c1.second in range }
+            val c2Index = filledRanges.indexOfFirst { range ->  c2.second in range }
+            c1Index != -1 && c1Index == c2Index
         }
-    }
-    return true
 }
 
 fun getPart2Result(redTiles: List<Pair<Long, Long>>): Long {
-    val boundaryTiles = getBoundaryTiles(redTiles)
-    println(boundaryTiles)
-    println("poop")
-    val filledTiles = getFilledTiles(boundaryTiles)
-    println(filledTiles)
-
-    return (0..<redTiles.lastIndex).toList().parallelStream()
-        .peek { println(it) }
-        .map { i ->
-            (i + 1..redTiles.lastIndex).map { j ->
-                if (isInteriorRectangle(redTiles[i], redTiles[j], filledTiles))
-                    return@map boxSize(redTiles[i], redTiles[j])
-                else return@map 0L
-            }.max()
+    val filledRanges = getFilledTileRanges(redTiles)
+    var largestBox = 0L
+    for (i in 0 ..< redTiles.lastIndex) {
+        for (j in i+1 .. redTiles.lastIndex) {
+            val boxSize = boxSize(redTiles[i], redTiles[j])
+            if (boxSize > largestBox &&
+                isInteriorRectangle(
+                    redTiles[i],
+                    redTiles[j],
+                    filledRanges
+                )) {
+                largestBox = boxSize
+            }
         }
-        .max{i, j -> i.compareTo(j) }.orElse(-1L)
+    }
+    return largestBox
 }
 
 private fun printGrid(
