@@ -125,23 +125,28 @@ fun getFilledTileRanges(cornerTiles: List<Pair<Long, Long>>): Map<Long, List<Lon
             continue
         }
 
-        val ranges = mutableListOf<LongRange>()
-        var rangeStart = rowFilledTiles.first()
-        var last = rangeStart
-        for (i in 1..rowFilledTiles.lastIndex) {
-            if (rowFilledTiles[i] != last + 1) {
-                ranges.add(rangeStart..last)
-                rangeStart = rowFilledTiles[i]
-            }
-            if (i == rowFilledTiles.lastIndex) {
-                ranges.add(rangeStart .. rowFilledTiles[i])
-            }
-            last = rowFilledTiles[i]
-        }
+        val ranges = getRangesFromNumbers(rowFilledTiles)
         //println("$rowIndex -> $ranges")
         fillTileRanges[rowIndex] = ranges
     }
     return fillTileRanges
+}
+
+fun getRangesFromNumbers(rowFilledTiles: MutableList<Long>): MutableList<LongRange> {
+    val ranges = mutableListOf<LongRange>()
+    var rangeStart = rowFilledTiles.first()
+    var last = rangeStart
+    for (i in 1..rowFilledTiles.lastIndex) {
+        if (rowFilledTiles[i] != last + 1) {
+            ranges.add(rangeStart..last)
+            rangeStart = rowFilledTiles[i]
+        }
+        if (i == rowFilledTiles.lastIndex) {
+            ranges.add(rangeStart..rowFilledTiles[i])
+        }
+        last = rowFilledTiles[i]
+    }
+    return ranges
 }
 
 var rowsOfInterest: List<Long>? = null
