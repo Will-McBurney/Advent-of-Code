@@ -176,21 +176,31 @@ fun isInteriorRectangle(
 
 fun getPart2Result(redTiles: List<Pair<Long, Long>>): Long {
     val filledRanges = getFilledTileRanges(redTiles)
-    var largestBox = 0L
-    for (i in 0 ..< redTiles.lastIndex) {
-        for (j in i+1 .. redTiles.lastIndex) {
-            val boxSize = boxSize(redTiles[i], redTiles[j])
-            if (boxSize > largestBox &&
-                isInteriorRectangle(
-                    redTiles[i],
-                    redTiles[j],
-                    filledRanges
-                )) {
-                largestBox = boxSize
-            }
-        }
-    }
-    return largestBox
+    
+    val maxSize = (0 ..< redTiles.lastIndex).toList().parallelStream()
+        .map { i ->
+            (i + 1..redTiles.lastIndex).filter { j -> isInteriorRectangle(redTiles[i], redTiles[j], filledRanges) }
+                .maxOfOrNull{ j -> boxSize(redTiles[i], redTiles[j])}
+        }.mapToLong { optLong -> optLong ?: 0L }
+        .max().asLong
+
+    return maxSize;
+    
+//    var largestBox = 0L
+//    for (i in 0 ..< redTiles.lastIndex) {
+//        for (j in i+1 .. redTiles.lastIndex) {
+//            val boxSize = boxSize(redTiles[i], redTiles[j])
+//            if (boxSize > largestBox &&
+//                isInteriorRectangle(
+//                    redTiles[i],
+//                    redTiles[j],
+//                    filledRanges
+//                )) {
+//                largestBox = boxSize
+//            }
+//        }
+//    }
+//    return largestBox
 }
 
 private fun printGrid(
