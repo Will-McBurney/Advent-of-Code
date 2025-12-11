@@ -57,7 +57,7 @@ class Machine(
         queue.add(startNode)
         val visited = hashSetOf<List<LightStatus>>()
         visited.add(startNode.lightStatus)
-        while (true) {
+        while (queue.isNotEmpty()) {
             val node = queue.poll()
             if (node.lightStatus == this.indicatorLightGoal) return node.buttonPresses
             this.buttons.map { button ->
@@ -78,14 +78,11 @@ class Machine(
                     queue.add(it)
                 }
         }
+        throw IllegalStateException("Not possible")
     }
     
-    fun getJoltagePresses(): Long {
-        data class SearchNode(
-            val joltageLevels: List<Int>,
-            val buttonPresses: Int
-        )
-        return 0L
+    fun getJoltagePresses(): Int {
+        return 0
     }
 }
 
@@ -126,7 +123,7 @@ fun main() {
     printer.endPart1()
     
     //Do Part 2
-    val part2Result = getPart2Result()
+    val part2Result = getPart2Result(machines)
     printer.endPart2()
     
     //Display output
@@ -137,6 +134,6 @@ fun getPart1Result(machines: List<Machine>): Int {
     return machines.sumOf { m -> m.getFewestPresses() }
 }
 
-fun getPart2Result(): Int {
-    return 0
+fun getPart2Result(machines: List<Machine>): Long {
+    return machines.parallelStream().mapToLong { m -> m.getJoltagePresses().toLong() }.sum()
 }
