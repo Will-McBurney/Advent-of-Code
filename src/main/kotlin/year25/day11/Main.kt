@@ -58,26 +58,54 @@ fun recursiveP1(server: Server, servers: Map<String, Server>, p1Cache: MutableMa
 }
 
 
-data class P2Node(
+data class P2Memo(
     val id: String,
-    val hasDac: Boolean,
-    val hasFft: Boolean
+    val neither: Long,
+    val hasDac: Long,
+    val hasFft: Long,
+    val hasBoth: Long
 )
 
 fun getPart2Result(servers: Map<String, Server>): Long {
-    val p2Cache = mutableMapOf<P2Node, Long>()
-    val start = P2Node("svr", false, false)
-    return recursiveP2(start, servers, p2Cache)
+    val p2Cache = mutableMapOf<String, P2Memo>()
+    return recursiveP2("svr", servers, p2Cache).hasBoth
 }
 
-fun recursiveP2(node: P2Node, servers: Map<String, Server>, p2Cache: MutableMap<P2Node, Long>): Long {
-    if (p2Cache[node] != null) return p2Cache[node]!!
-    if (servers[node.id]!!.connections.contains("out")) {
-        p2Cache[node] == 1L
-        return 1L
+fun recursiveP2(serverString: String, servers: Map<String, Server>, p2Cache: MutableMap<String, P2Memo>): P2Memo {
+    if (p2Cache[serverString] != null) return p2Cache[serverString]!!
+    if (servers[serverString]!!.connections.contains("out")) {
+        p2Cache[serverString] = P2Memo(serverString, neither = 1L, hasDac = 0L, hasFft = 0L, hasBoth = 0L)
+        return p2Cache[serverString]!!
     }
-    p2Cache[node] = servers[node.id]!!.connections.sumOf { c ->
-        recursiveP2(node.copy(id = c), servers, p2Cache)
+    val children = servers[serverString]!!.connections.map { recursiveP2(it, servers, p2Cache) }
+    p2Cache[serverString] = when (serverString) {
+        "dac" -> {
+            P2Memo(
+                id = serverString,
+                neither = 0L,
+                hasDac = children.sumOf { it.neither },
+                hasFft = 0L,
+                hasBoth = children.sumOf { it.hasFft }
+            )
+        }
+        "fft" -> {
+            P2Memo(
+                id = serverString,
+                neither = 0L,
+                hasDac = 0L,
+                hasFft = children.sumOf { it.neither },
+                hasBoth = children.sumOf { it.hasDac }
+            )
+        }
+        else -> {
+            P2Memo(
+                id = serverString,
+                neither = children.sumOf { it.neither },
+                hasDac = children.sumOf { it.hasDac },
+                hasFft = children.sumOf { it.hasFft },
+                hasBoth = children.sumOf { it.hasBoth }
+            )
+        }
     }
-    return p2Cache[node]!!
+    return p2Cache[serverString]!!
 }
