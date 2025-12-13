@@ -139,7 +139,7 @@ fun getAllCombinations(
     index: Int
 ): List<List<Button>> {
     if (index >= buttons.size) {
-        return listOf(emptyList<Button>())
+        return listOf(emptyList())
     }
     val combinations = getAllCombinations(buttons, index + 1)
     val newCombinations = combinations.map { it + buttons[index] }.toMutableList()
