@@ -40,7 +40,7 @@ fun main() {
 
 
 fun getPart1Result(servers: Map<String, Server>): Long {
-    val start = servers["svr"]!!
+    val start = servers["you"]!!
     val p1Cache = mutableMapOf<Server, Long>()
     return recursiveP1(start, servers, p1Cache)
 }
