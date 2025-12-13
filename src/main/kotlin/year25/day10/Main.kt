@@ -81,9 +81,72 @@ class Machine(
         throw IllegalStateException("Not possible")
     }
     
-    fun getJoltagePresses(): Int {
-        return 0
+    fun getJoltagePresses(): Int =
+        solveJoltage(this.buttons, this.joltageRequirements)
+}
+
+fun solveJoltage(buttons: List<Button>, goal: List<Int>): Int {
+    val comboTotals = getCombinationTotals(buttons, goal)
+    val comboParities = comboTotals.keys.associateWith { k ->
+        comboTotals[k]!!.map { it % 2 }
     }
+    return solveRecursive(goal, buttons, comboTotals, comboParities, 0, mutableMapOf()).sum()
+}
+
+fun solveRecursive(
+    goal: List<Int>,
+    buttons: List<Button>,
+    comboTotals: Map<List<Button>, List<Int>>,
+    comboParities: Map<List<Button>, List<Int>>,
+    depth: Int,
+    cache: MutableMap<List<Int>, List<Int>>
+): List<Int> {
+    if (cache[goal] != null) return cache[goal]!!
+    if (goal.all { it == 0 }) return (Array(buttons.size) {0}).toList()
+    if (goal.any { it < 0}) return (Array(buttons.size){100000}).toList()
+    
+    val parity = goal.map { it % 2 }
+    val matchingButtonCombos = comboParities.keys.filter { comboParities[it]!! == parity }
+    if (matchingButtonCombos.isEmpty()) return (Array(buttons.size){100000}).toList()
+    val buttonPressCombos = matchingButtonCombos.map { combo ->
+        val adjustedGoal = goal.mapIndexed { i, g -> (g - comboTotals[combo]!![i]) / 2 }
+        solveRecursive(adjustedGoal, buttons, comboTotals, comboParities, depth + 1, cache).map { it * 2 }
+            .mapIndexed { i, r -> if (buttons[i] in combo) r + 1 else r}
+    }
+    val bestResult = buttonPressCombos.minBy { it.sum() }
+    cache[goal] = bestResult
+    return bestResult
+}
+
+private fun getCombinationTotals(
+    buttons: List<Button>,
+    goal: List<Int>
+): Map<List<Button>, List<Int>> {
+    val combinations = getAllCombinations(buttons, 0)
+    val comboParities = combinations.associateWith { combo ->
+        val comboResult = Array(goal.size) { 0 }
+        combo.forEach { button ->
+            button.toggles.forEach { index ->
+                comboResult[index] = (comboResult[index] + 1)
+            }
+        }
+        comboResult.toList()
+    }
+    return comboParities
+}
+
+fun getAllCombinations(
+    buttons: List<Button>,
+    index: Int
+): List<List<Button>> {
+    if (index >= buttons.size) {
+        return listOf(emptyList<Button>())
+    }
+    val combinations = getAllCombinations(buttons, index + 1)
+    val newCombinations = combinations.map { it + buttons[index] }.toMutableList()
+    newCombinations.addAll(combinations)
+    newCombinations.add(listOf(buttons[index]))
+    return newCombinations
 }
 
 class Button(
@@ -134,6 +197,6 @@ fun getPart1Result(machines: List<Machine>): Int {
     return machines.sumOf { m -> m.getFewestPresses() }
 }
 
-fun getPart2Result(machines: List<Machine>): Long {
-    return machines.parallelStream().mapToLong { m -> m.getJoltagePresses().toLong() }.sum()
+fun getPart2Result(machines: List<Machine>): Int {
+    return machines.sumOf { m -> m.getJoltagePresses() }
 }
