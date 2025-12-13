@@ -90,7 +90,7 @@ fun solveJoltage(buttons: List<Button>, goal: List<Int>): Int {
     val comboParities = comboTotals.keys.associateWith { k ->
         comboTotals[k]!!.map { it % 2 }
     }
-    return solveRecursive(goal, buttons, comboTotals, comboParities, 0, mutableMapOf()).sum()
+    return solveRecursive(goal, buttons, comboTotals, comboParities, mutableMapOf()).sum()
 }
 
 fun solveRecursive(
@@ -98,7 +98,6 @@ fun solveRecursive(
     buttons: List<Button>,
     comboTotals: Map<List<Button>, List<Int>>,
     comboParities: Map<List<Button>, List<Int>>,
-    depth: Int,
     cache: MutableMap<List<Int>, List<Int>>
 ): List<Int> {
     if (cache[goal] != null) return cache[goal]!!
@@ -110,7 +109,7 @@ fun solveRecursive(
     if (matchingButtonCombos.isEmpty()) return (Array(buttons.size){100000}).toList()
     val buttonPressCombos = matchingButtonCombos.map { combo ->
         val adjustedGoal = goal.mapIndexed { i, g -> (g - comboTotals[combo]!![i]) / 2 }
-        solveRecursive(adjustedGoal, buttons, comboTotals, comboParities, depth + 1, cache).map { it * 2 }
+        solveRecursive(adjustedGoal, buttons, comboTotals, comboParities, cache).map { it * 2 }
             .mapIndexed { i, r -> if (buttons[i] in combo) r + 1 else r}
     }
     val bestResult = buttonPressCombos.minBy { it.sum() }
